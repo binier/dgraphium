@@ -1,0 +1,71 @@
+{
+  "private": true,
+  "name": "dgraphium",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/binier/dgraphium.git"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint '**/*.{ts,js}'",
+    "lint:check": "yarn lint",
+    "lint:fix": "yarn lint -- --fix",
+    "build": "lerna run build",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "test:prod": "yarn lint && lerna run test -- --no-cache",
+    "release": "lerna version",
+    "prerelease": "lerna version prerelease --preid next",
+    "publish": "lerna publish from-git --yes --npm-client yarn",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsc --noEmit && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "eslint --fix"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "@binier/hygen": "^5.2.0",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.0",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "commitizen": "^4.0.4",
+    "coveralls": "^3.0.2",
+    "cz-conventional-changelog": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.2",
+    "husky": "^4.2.5",
+    "jest": "^25.4.0",
+    "jest-config": "^25.4.0",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.1.6",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^25.4.0",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.0.3"
+  }
+}

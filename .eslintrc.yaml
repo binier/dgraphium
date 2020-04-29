@@ -1,0 +1,81 @@
+env:
+  browser: true
+  node: true
+parser: "@typescript-eslint/parser"
+parserOptions:
+  project: ["tsconfig.json"]
+  sourceType: module
+plugins:
+  - "@typescript-eslint"
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+rules:
+  camelcase: error
+  comma-dangle: [error, always-multiline]
+  curly: [error, multi-or-nest]
+  eol-last: error
+  id-blacklist:
+    - error
+    - any
+    - Number
+    - number
+    - String
+    - string
+    - Boolean
+    - boolean
+    - Undefined
+    - undefined
+  id-match: error
+  new-parens: error
+  no-caller: error
+  no-cond-assign: error
+  no-constant-condition: error
+  no-control-regex: error
+  no-duplicate-imports: error
+  no-empty: error
+  no-eval: error
+  no-fallthrough: error
+  no-invalid-regexp: error
+  no-multiple-empty-lines: error
+  no-redeclare: error
+  no-regex-spaces: error
+  no-return-await: error
+  no-trailing-spaces: error
+  no-unused-expressions:
+    - error
+    - allowTaggedTemplates: true
+      allowShortCircuit: true
+  no-unused-labels: error
+  no-var: error
+  one-var:
+    - error
+    - never
+  space-in-parens:
+    - error
+    - never
+  spaced-comment:
+    - error
+    - always
+    - exceptions: ["-", "+"]
+  use-isnan: error
+
+  # @typescript-eslint related
+  space-before-function-paren: "off"
+  "@typescript-eslint/consistent-type-assertions": error
+  "@typescript-eslint/no-floating-promises": error
+  "@typescript-eslint/no-misused-new": error
+  "@typescript-eslint/no-unnecessary-qualifier": error
+  "@typescript-eslint/no-unnecessary-type-assertion": error
+  "@typescript-eslint/prefer-namespace-keyword": error
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/type-annotation-spacing": error
+  "@typescript-eslint/unified-signatures": error
+  "@typescript-eslint/quotes": [error, single, { avoidEscape: true }]
+  "@typescript-eslint/space-before-function-paren":
+    - error
+    - named: never
+      anonymous: always
+      asyncArrow: always
+

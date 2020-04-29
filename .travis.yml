@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - "10"
+  - "12"
+  - "stable"
+env:
+  global:
+    - PATH=$HOME/.yarn/bin:$PATH
+cache:
+  yarn: true
+  directories:
+    - "node_modules"
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install make; fi
+  - yarn run lerna run prepublish
+script:
+  - yarn lint
+  - yarn test
+before_deploy:
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+deploy:
+  provider: script
+  script: "yarn run publish"
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true

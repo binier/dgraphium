@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.build.json",
+  "include": [
+    "**/packages/*/src/**/*.ts",
+    "**/packages/*/test/**/*.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@dgraphium/*": ["packages/*/src"]
+    }
+  }
+}
