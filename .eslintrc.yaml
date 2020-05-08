@@ -16,17 +16,6 @@ rules:
   comma-dangle: [error, always-multiline]
   curly: [error, multi-or-nest]
   eol-last: error
-  id-blacklist:
-    - error
-    - any
-    - Number
-    - number
-    - String
-    - string
-    - Boolean
-    - boolean
-    - Undefined
-    - undefined
   id-match: error
   new-parens: error
   no-caller: error
@@ -63,6 +52,7 @@ rules:
 
   # @typescript-eslint related
   space-before-function-paren: "off"
+  "@typescript-eslint/explicit-function-return-type": "off"
   "@typescript-eslint/consistent-type-assertions": error
   "@typescript-eslint/no-floating-promises": error
   "@typescript-eslint/no-misused-new": error
