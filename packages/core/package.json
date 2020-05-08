@@ -1,0 +1,38 @@
+{
+  "name": "@dgraphium/core",
+  "license": "MIT",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/binier/dgraphium.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean:dist": "rimraf dist",
+    "compile": "tsc -b tsconfig.build.json",
+    "build": "yarn clean:dist && yarn compile",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "test:prod": "yarn test -- --no-cache",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.0",
+    "coveralls": "^3.0.2",
+    "jest": "^25.4.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^25.4.0",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.0.3"
+  }
+}
