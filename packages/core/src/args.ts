@@ -1,7 +1,8 @@
 import { Uid } from './uid';
+import { Operator } from './operators/operator';
 
 export interface ArgsData {
-  func?: string;
+  func?: Operator;
   first?: number;
   offset?: number;
   after?: Uid;
@@ -19,6 +20,11 @@ export class Args {
   setArg<K extends keyof ArgsData>(key: K, val: ArgsData[K]) {
     this.args[key] = val;
   }
+
+  get func() { return this.args.func; }
+  get first() { return this.args.first; }
+  get offset() { return this.args.offset; }
+  get after() { return this.args.after; }
 
   length() {
     return Object.values(this.args)
