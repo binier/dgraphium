@@ -1,5 +1,13 @@
 import { ObjectOrValue } from './ts-helpers';
 import { Args, EdgeArgs } from './args';
+import {
+  LogicalOperator,
+  Operator,
+  OperatorBuilder,
+  LogicalOperatorBuilder,
+} from './operators';
+
+type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
 export type RawProjection = ObjectOrValue<Edge | string | boolean | 0 | 1>;
 export type EdgeLike = Edge | RawProjection;
@@ -15,6 +23,8 @@ function capitalize(s: string) {
 
 export class Edge {
   protected args: Args = new Args();
+  protected _filter?: Operator | LogicalOperator;
+
   constructor(
     private type: string,
     protected edges: RawProjection
@@ -42,6 +52,29 @@ export class Edge {
 
   after(val: EdgeArgs['after']) {
     this.args.setArg('after', val);
+    return this;
+  }
+
+  protected buildOp<
+    T extends OpBuilders,
+    R extends ReturnType<T['build']>
+  >(op: T): R {
+    if (op instanceof OperatorBuilder) {
+      return op.build(x => ({
+        ...x,
+        subject: this.keyToField(x.subject),
+      })) as R;
+    } else if (op instanceof LogicalOperatorBuilder) {
+      return op.build(args => ({
+        ...args,
+        operators: args.operators.map(this.buildOp.bind(this)),
+      })) as R;
+    }
+    throw Error('invalid `op`');
+  }
+
+  filter(opBuilder: OpBuilders) {
+    this._filter = this.buildOp(opBuilder);
     return this;
   }
 
@@ -75,10 +108,13 @@ export class Edge {
       .map(x => indent(x));
 
     const argsStr = !this.args.length() ? ''
-      : `(${this.args.toString()})`;
+      : `(${this.args.toString()}) `;
+
+    const filterStr = !this._filter ? ''
+      : `@filter(${this._filter}) `;
 
     return [
-      rootIndent(`${argsStr} {`.trim()),
+      rootIndent(`${argsStr}${filterStr}{`.trim()),
       ...projectionLines,
       rootIndent('}'),
     ].join('\n');
