@@ -25,4 +25,3 @@ export class LogicalOperator {
       .join(` ${this.type} `);
   }
 }
-

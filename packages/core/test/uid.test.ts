@@ -35,4 +35,3 @@ describe('Uid test', () => {
     shouldBeValid('f');
   });
 });
-

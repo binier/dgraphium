@@ -8,4 +8,3 @@ module.exports = {
   ],
   coverageDirectory: "<rootDir>/coverage/"
 };
-

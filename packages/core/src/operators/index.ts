@@ -5,4 +5,3 @@ export {
   LogicalOperatorBuilder,
   LogicalOperatorBuilderArgs,
 } from './logical-operator-builder';
-

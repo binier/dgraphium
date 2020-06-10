@@ -27,7 +27,6 @@ function defaultTransform(
   }
 }
 
-
 export class LogicalOperatorBuilder {
   constructor(private args: LogicalOperatorBuilderArgs) { }
 
@@ -35,4 +34,3 @@ export class LogicalOperatorBuilder {
     return new LogicalOperator(transform(this.args));
   }
 }
-

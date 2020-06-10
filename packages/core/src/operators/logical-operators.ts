@@ -14,4 +14,3 @@ export function or(...ops: OpBuilder[]) {
 export function not(op: OpBuilder) {
   return new LogicalOperatorBuilder({ type: 'NOT', operators: [op] });
 }
-
