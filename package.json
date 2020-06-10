@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "lint": "eslint '**/*.{ts,js}'",
+    "lint": "eslint 'packages/*/src/**/*.{ts,js}'",
     "lint:check": "yarn lint",
     "lint:fix": "yarn lint -- --fix",
     "build": "lerna run build",
