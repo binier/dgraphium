@@ -1,7 +1,12 @@
-import { Operator, OperatorArgs } from './operator';
+import { Operator, OperatorArgs, OpValue } from './operator';
 import { Transformer } from '../utils';
+import { ParamBuilder } from '../params/param';
 
-export interface OperatorBuilderArgs extends OperatorArgs { }
+export type OpBuilderValue = ParamBuilder | OpValue;
+
+export interface OperatorBuilderArgs extends Omit<OperatorArgs, 'value'> {
+  value?: OpBuilderValue | OpBuilderValue[];
+}
 
 export class OperatorBuilder {
   constructor(private args: OperatorBuilderArgs) { }
@@ -13,4 +18,3 @@ export class OperatorBuilder {
     return new Operator(args);
   }
 }
-

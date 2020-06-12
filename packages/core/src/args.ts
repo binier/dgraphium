@@ -1,5 +1,5 @@
 import { Uid } from './uid';
-import { Operator } from './operators/operator';
+import { Operator } from './operator';
 
 export interface ArgsData {
   func?: Operator;

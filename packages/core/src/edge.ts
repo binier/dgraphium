@@ -4,9 +4,10 @@ import { Args, EdgeArgs } from './args';
 import {
   LogicalOperator,
   Operator,
+  LogicalOperator,
   OperatorBuilder,
   LogicalOperatorBuilder,
-} from './operators';
+} from './operator';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 

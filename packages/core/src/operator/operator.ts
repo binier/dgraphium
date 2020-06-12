@@ -28,4 +28,3 @@ export class Operator {
     return `${this.name}(${args.join(', ')})`;
   }
 }
-

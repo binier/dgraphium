@@ -1,5 +1,4 @@
-import { LogicalOperatorBuilder } from './logical-operator-builder';
-import { OperatorBuilder } from './operator-builder';
+import { OperatorBuilder, LogicalOperatorBuilder } from '../operator';
 
 type OpBuilder = OperatorBuilder | LogicalOperatorBuilder;
 
