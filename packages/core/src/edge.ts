@@ -1,3 +1,4 @@
+import clone from 'clone';
 import { ObjectOrValue } from './ts-helpers';
 import { Args, EdgeArgs } from './args';
 import {
@@ -9,8 +10,9 @@ import {
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
-export type RawProjection = ObjectOrValue<Edge | string | boolean | 0 | 1>;
-export type EdgeLike = Edge | RawProjection;
+export type ProjectionValue = Edge | string | boolean | 0 | 1;
+export type RawProjection = ObjectOrValue<ProjectionValue>;
+export type Projection = { [name: string]: ProjectionValue };
 
 function indenter(depth = 0, indentation = '  ') {
   const prefix = indentation.repeat(depth);
@@ -22,14 +24,25 @@ function capitalize(s: string) {
 }
 
 export class Edge {
+  protected edges: Projection;
   protected args: Args = new Args();
   protected _filter?: Operator | LogicalOperator;
 
   constructor(
-    private type: string,
-    protected edges: RawProjection
+    protected type: string,
+    edges: Edge | RawProjection
   ) {
     this.type = capitalize(this.type);
+
+    if (edges instanceof Edge)
+      return clone(edges);
+
+    this.edges = Object.entries(edges)
+      .reduce((r, [k ,v]) => {
+        if (typeof v === 'object') r[k] = new Edge(k, v);
+        else r[k] = v;
+        return r;
+      }, {})
   }
 
   withArgs(args: Args | EdgeArgs) {
@@ -100,9 +113,6 @@ export class Edge {
         if (['boolean', 'number'].includes(typeof val))
           return keyToFieldStr;
 
-        if (!(val instanceof Edge))
-          val = new Edge(key, val as any);
-
         return `${keyToFieldStr} ${val.toString(extraDepth + 1).trim()}`;
       })
       .map(x => indent(x));
@@ -120,4 +130,3 @@ export class Edge {
     ].join('\n');
   }
 }
-

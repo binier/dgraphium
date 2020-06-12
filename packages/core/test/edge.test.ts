@@ -80,5 +80,20 @@ describe('Edge test', () => {
     ).toMatch(/(text: Post\.text)/);
   });
 
-});
+  it('should return cloned Edge when we pass instanceof Edge as argument', () => {
+    const edge = new Edge('user', { id: 1 });
+    const cloned = new Edge('user', edge);
+    edge.first(1);
+    expect(cloned.toString()).not.toMatch(/(first: 1)/);
+  });
 
+  it("changes to nested edge shouldn't affect it's parent edge", () => {
+    const nested = new Edge('post', { id: 1 });
+    const edge = new Edge('user', {
+      id: 1,
+      post: nested,
+    });
+    nested.first(1);
+    expect(edge.toString()).not.toMatch(/(first: 1)/);
+  });
+});
