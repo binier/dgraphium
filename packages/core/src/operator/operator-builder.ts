@@ -1,6 +1,6 @@
 import { Operator, OperatorArgs, OpValue } from './operator';
 import { Transformer } from '../utils';
-import { ParamBuilder } from '../params/param';
+import { ParamBuilder } from '../param';
 
 export type OpBuilderValue = ParamBuilder | OpValue;
 

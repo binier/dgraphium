@@ -1,5 +1,7 @@
+import { Param } from '../param';
+
 export type Subject = string;
-export type OpValue = string | number | boolean;
+export type OpValue = Param | string | number | boolean;
 
 export interface OperatorArgs {
   name: string;

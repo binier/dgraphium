@@ -8,3 +8,11 @@ export function transformable<A, PA, R>(
   return (transform: Transformer<A, PA>) => fn(transform(args));
 }
 
+/**
+ * @param i start number
+*/
+export function* numberSeqGenerator(i = 0) {
+  while (true) {
+    yield ++i;
+  }
+}

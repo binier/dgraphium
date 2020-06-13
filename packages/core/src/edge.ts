@@ -2,12 +2,14 @@ import clone from 'clone';
 import { ObjectOrValue } from './ts-helpers';
 import { Args, EdgeArgs } from './args';
 import {
-  LogicalOperator,
+  OpValue,
+  OpBuilderValue,
   Operator,
   LogicalOperator,
   OperatorBuilder,
   LogicalOperatorBuilder,
 } from './operator';
+import { ParamBuilder, Param, paramNameGen } from './param';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
@@ -26,6 +28,7 @@ function capitalize(s: string) {
 
 export class Edge {
   protected edges: Projection;
+  protected pNameGen = paramNameGen();
   protected args: Args = new Args();
   protected _filter?: Operator | LogicalOperator;
 
@@ -69,14 +72,28 @@ export class Edge {
     return this;
   }
 
+  protected buildOpValue(value: ParamBuilder): Param;
+  protected buildOpValue(values: ParamBuilder[]): Param[];
+  protected buildOpValue<
+    T extends (OpBuilderValue | OpBuilderValue[])
+  >(value?: T): OpValue | OpValue[];
+  protected buildOpValue(value?: any): any {
+    if (Array.isArray(value))
+      return value.map(x => this.buildOpValue(x));
+    if (value instanceof ParamBuilder)
+      return value.build(this.pNameGen.next().value);
+    return value;
+  }
+
   protected buildOp<
     T extends OpBuilders,
     R extends ReturnType<T['build']>
   >(op: T): R {
     if (op instanceof OperatorBuilder) {
-      return op.build(x => ({
-        ...x,
-        subject: this.keyToField(x.subject),
+      return op.build(args => ({
+        ...args,
+        value: this.buildOpValue(args.value),
+        subject: this.keyToField(args.subject),
       })) as R;
     } else if (op instanceof LogicalOperatorBuilder) {
       return op.build(args => ({
