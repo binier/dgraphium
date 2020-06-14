@@ -1,10 +1,10 @@
-import { Edge } from '../src/edge';
+import { EdgeBuilder } from '../src/edge-builder';
 import { Uid } from '../src/uid';
 
 // does not test formatting
 describe('Edge test', () => {
   it('withArgs should yield same result as individually setting args', () => {
-    const edge = () => new Edge('user', { id: 1 });
+    const edge = () => new EdgeBuilder('user', { id: 1 });
     const args = {
       first: 10,
       offset: 5,
@@ -30,7 +30,7 @@ describe('Edge test', () => {
       offset: 5,
       after: new Uid('0x1'),
     };
-    const edge = () => new Edge('user', { id: 1 });
+    const edge = () => new EdgeBuilder('user', { id: 1 });
     const edgeStrWithArgs = (...toExclude: string[]) => edge().withArgs({
       ...args,
       ...toExclude.reduce((r, x) => { r[x] = undefined; return r; }, {}),
@@ -58,7 +58,7 @@ describe('Edge test', () => {
 
   it("should use nested edge's(!instanceof Edge) key as prefix", () => {
     expect(
-      new Edge('user', {
+      new EdgeBuilder('user', {
         id: 1,
         auth: {
           id: 1,
@@ -70,9 +70,9 @@ describe('Edge test', () => {
 
   it("should use nested edge's(instanceof Edge) type as prefix", () => {
     expect(
-      new Edge('user', {
+      new EdgeBuilder('user', {
         id: 1,
-        posts: new Edge('post', {
+        posts: new EdgeBuilder('post', {
           id: 1,
           text: 1,
         }),
@@ -81,15 +81,15 @@ describe('Edge test', () => {
   });
 
   it('should return cloned Edge when we pass instanceof Edge as argument', () => {
-    const edge = new Edge('user', { id: 1 });
-    const cloned = new Edge('user', edge);
+    const edge = new EdgeBuilder('user', { id: 1 });
+    const cloned = new EdgeBuilder('user', edge);
     edge.first(1);
     expect(cloned.toString()).not.toMatch(/(first: 1)/);
   });
 
   it("changes to nested edge shouldn't affect it's parent edge", () => {
-    const nested = new Edge('post', { id: 1 });
-    const edge = new Edge('user', {
+    const nested = new EdgeBuilder('post', { id: 1 });
+    const edge = new EdgeBuilder('user', {
       id: 1,
       post: nested,
     });

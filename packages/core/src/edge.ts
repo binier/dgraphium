@@ -1,112 +1,36 @@
-import clone from 'clone';
 import { ObjectOrValue } from './ts-helpers';
-import { Args, EdgeArgs } from './args';
+import { Args } from './args';
 import {
-  OpValue,
-  OpBuilderValue,
   Operator,
   LogicalOperator,
-  OperatorBuilder,
-  LogicalOperatorBuilder,
 } from './operator';
-import { ParamBuilder, Param, paramNameGen } from './param';
-
-type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
 export type ProjectionValue = Edge | string | boolean | 0 | 1;
 export type RawProjection = ObjectOrValue<ProjectionValue>;
 export type Projection = { [name: string]: ProjectionValue };
+export type Filter = Operator | LogicalOperator;
 
 function indenter(depth = 0, indentation = '  ') {
   const prefix = indentation.repeat(depth);
   return (str = ''): string => prefix + str;
 }
 
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+interface EdgeArgs {
+  type: string;
+  edges: Projection;
+  args?: Args;
+  filter?: Filter;
 }
 
 export class Edge {
+  protected type: string;
   protected edges: Projection;
-  protected pNameGen = paramNameGen();
-  protected args: Args = new Args();
-  protected _filter?: Operator | LogicalOperator;
+  protected args: Args;
+  protected filter?: Filter;
 
-  constructor(
-    protected type: string,
-    edges: Edge | RawProjection
-  ) {
-    this.type = capitalize(this.type);
-
-    if (edges instanceof Edge)
-      return clone(edges);
-
-    this.edges = Object.entries(edges)
-      .reduce((r, [k ,v]) => {
-        if (typeof v === 'object') r[k] = new Edge(k, v);
-        else r[k] = v;
-        return r;
-      }, {})
-  }
-
-  withArgs(args: Args | EdgeArgs) {
-    if (args instanceof Args)
-      this.args = args;
-    else
-      this.args = new Args(args);
-    return this;
-  }
-
-  first(val: EdgeArgs['first']) {
-    this.args.setArg('first', val);
-    return this;
-  }
-
-  offset(val: EdgeArgs['offset']) {
-    this.args.setArg('offset', val);
-    return this;
-  }
-
-  after(val: EdgeArgs['after']) {
-    this.args.setArg('after', val);
-    return this;
-  }
-
-  protected buildOpValue(value: ParamBuilder): Param;
-  protected buildOpValue(values: ParamBuilder[]): Param[];
-  protected buildOpValue<
-    T extends (OpBuilderValue | OpBuilderValue[])
-  >(value?: T): OpValue | OpValue[];
-  protected buildOpValue(value?: any): any {
-    if (Array.isArray(value))
-      return value.map(x => this.buildOpValue(x));
-    if (value instanceof ParamBuilder)
-      return value.build(this.pNameGen.next().value);
-    return value;
-  }
-
-  protected buildOp<
-    T extends OpBuilders,
-    R extends ReturnType<T['build']>
-  >(op: T): R {
-    if (op instanceof OperatorBuilder) {
-      return op.build(args => ({
-        ...args,
-        value: this.buildOpValue(args.value),
-        subject: this.keyToField(args.subject),
-      })) as R;
-    } else if (op instanceof LogicalOperatorBuilder) {
-      return op.build(args => ({
-        ...args,
-        operators: args.operators.map(this.buildOp.bind(this)),
-      })) as R;
-    }
-    throw Error('invalid `op`');
-  }
-
-  filter(opBuilder: OpBuilders) {
-    this._filter = this.buildOp(opBuilder);
-    return this;
+  constructor(args: EdgeArgs) {
+    Object.assign(this, args);
+    this.args = this.args || new Args();
   }
 
   keyToField(key: string) {
@@ -138,8 +62,8 @@ export class Edge {
     const argsStr = !this.args.length() ? ''
       : `(${this.args.toString()}) `;
 
-    const filterStr = !this._filter ? ''
-      : `@filter(${this._filter}) `;
+    const filterStr = !this.filter ? ''
+      : `@filter(${this.filter}) `;
 
     return [
       rootIndent(`${argsStr}${filterStr}{`.trim()),

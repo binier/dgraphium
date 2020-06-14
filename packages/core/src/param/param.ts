@@ -11,6 +11,7 @@ export interface ParamTypeValue {
 export type ParamType = keyof ParamTypeValue;
 export type ParamMap = { [name: string]: Param };
 export type ParamBuilderMap = { [name: string]: ParamBuilder };
+export type ParamNameGen = Generator<string, string>;
 
 function parseParamName(name: string) {
   name = name.trim();
@@ -18,7 +19,7 @@ function parseParamName(name: string) {
   return name;
 }
 
-export function* paramNameGen(startI = 0): Generator<string, string> {
+export function* paramNameGen(startI = 0): ParamNameGen {
   const numGen = numberSeqGenerator(startI);
   while (true) {
     yield 'g' + numGen.next().value;
