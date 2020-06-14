@@ -13,24 +13,10 @@ type BuildTransformer = Transformer<
   LogicalOperatorArgs
 >;
 
-function defaultTransform(
-  args: LogicalOperatorBuilderArgs
-): LogicalOperatorArgs {
-  return {
-    ...args,
-    operators: args.operators.map(op => {
-      if (op instanceof OperatorBuilder)
-        return op.build();
-      else
-        return op.build(defaultTransform);
-    }),
-  }
-}
-
 export class LogicalOperatorBuilder {
   constructor(private args: LogicalOperatorBuilderArgs) { }
 
-  build(transform: BuildTransformer = defaultTransform) {
+  build(transform: BuildTransformer) {
     return new LogicalOperator(transform(this.args));
   }
 }

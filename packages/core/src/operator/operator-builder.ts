@@ -11,10 +11,7 @@ export interface OperatorBuilderArgs extends Omit<OperatorArgs, 'value'> {
 export class OperatorBuilder {
   constructor(private args: OperatorBuilderArgs) { }
 
-  build(transform?: Transformer<OperatorBuilderArgs, OperatorArgs>) {
-    let args = this.args as unknown as OperatorArgs;
-    if (transform)
-      args = transform(this.args);
-    return new Operator(args);
+  build(transform: Transformer<OperatorBuilderArgs, OperatorArgs>) {
+    return new Operator(transform(this.args));
   }
 }
