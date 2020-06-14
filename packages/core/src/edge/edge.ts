@@ -1,30 +1,22 @@
-import { ObjectOrValue } from './ts-helpers';
-import { Args } from './args';
+import { Args } from '../args';
 import {
   Operator,
   LogicalOperator,
-} from './operator';
+} from '../operator';
+import { indenter, Projection } from './common';
 
-export type ProjectionValue = Edge | string | boolean | 0 | 1;
-export type RawProjection = ObjectOrValue<ProjectionValue>;
-export type Projection = { [name: string]: ProjectionValue };
 export type Filter = Operator | LogicalOperator;
-
-function indenter(depth = 0, indentation = '  ') {
-  const prefix = indentation.repeat(depth);
-  return (str = ''): string => prefix + str;
-}
 
 interface EdgeArgs {
   type: string;
-  edges: Projection;
+  edges: Projection<Edge>;
   args?: Args;
   filter?: Filter;
 }
 
 export class Edge {
   protected type: string;
-  protected edges: Projection;
+  protected edges: Projection<Edge>;
   protected args: Args;
   protected filter?: Filter;
 

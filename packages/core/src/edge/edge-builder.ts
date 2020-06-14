@@ -1,33 +1,25 @@
 import clone from 'clone';
-import { ObjectOrValue } from './ts-helpers';
-import { ArgsBuilder, ArgsBuilderData } from './args';
+import { ArgsBuilder, ArgsBuilderData } from '../args';
 import {
   OpValue,
   OpBuilderValue,
   OperatorBuilder,
   LogicalOperatorBuilder,
-} from './operator';
-import { ParamBuilder, paramNameGen, ParamNameGen } from './param';
+} from '../operator';
+import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
+import { capitalize, RawProjection, Projection } from './common';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
-export type ProjectionValue = EdgeBuilder | string | boolean | 0 | 1;
-export type RawProjection = ObjectOrValue<ProjectionValue>;
-export type Projection = { [name: string]: ProjectionValue };
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
 export class EdgeBuilder {
-  protected edges: Projection;
+  protected edges: Projection<EdgeBuilder>;
   protected args: ArgsBuilder = new ArgsBuilder();
   protected _filter?: OpBuilders;
 
   constructor(
     protected type: string,
-    edges: EdgeBuilder | RawProjection
+    edges: EdgeBuilder | RawProjection<EdgeBuilder>
   ) {
     this.type = capitalize(this.type);
 

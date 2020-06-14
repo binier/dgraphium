@@ -1,4 +1,4 @@
-import { EdgeBuilder } from '../src/edge-builder';
+import { EdgeBuilder } from '../src/edge';
 import { Uid } from '../src/uid';
 
 // does not test formatting
