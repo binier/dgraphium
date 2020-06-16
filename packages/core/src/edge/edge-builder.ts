@@ -103,6 +103,20 @@ export class EdgeBuilder {
     return `${this.type}.${key}`;
   }
 
+  paramBuilders(): ParamBuilder[] {
+    const edgeParams: ParamBuilder[] = Object.values(this.edges)
+      .reduce((r, x) => [
+        ...r,
+        ...(x instanceof EdgeBuilder ? x.paramBuilders() : []),
+      ], []);
+
+    return [
+      ...edgeParams,
+      ...this.args.paramBuilders(),
+      ...(this._filter ? this._filter.paramBuilders() : []),
+    ];
+  }
+
   build(pNameGen = paramNameGen()) {
     const args = this.args.build(argMap => {
       return Object.entries(argMap)

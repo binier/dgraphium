@@ -11,6 +11,12 @@ export interface OperatorBuilderArgs extends Omit<OperatorArgs, 'value'> {
 export class OperatorBuilder {
   constructor(private args: OperatorBuilderArgs) { }
 
+  paramBuilders(): ParamBuilder[] {
+    if (this.args.value instanceof ParamBuilder)
+      return [this.args.value];
+    return [];
+  }
+
   build(transform: Transformer<OperatorBuilderArgs, OperatorArgs>) {
     return new Operator(transform(this.args));
   }
