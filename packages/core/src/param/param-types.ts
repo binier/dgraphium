@@ -1,8 +1,8 @@
 import { ParamBuilder } from './param-builder';
 import { Uid, UidLike } from '../uid';
 
-export function uid(val: UidLike) {
-  return new ParamBuilder('string', new Uid(val));
+export function uid(uids: ParamBuilder<'uid'>[]) {
+  return new ParamBuilder('uid', uids);
 }
 
 export function string(val: string, name?: string) {
