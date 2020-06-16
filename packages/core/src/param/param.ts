@@ -13,7 +13,7 @@ export type ParamMap = { [name: string]: Param };
 
 export class Param<
   T extends ParamType = any,
-  V extends ParamTypeValue[T] = any
+  V = ParamTypeValue[T]
 > {
   static paramsDefineStr(params: Param[] | ParamMap): string {
     if (!Array.isArray(params)) params = Object.values(params);

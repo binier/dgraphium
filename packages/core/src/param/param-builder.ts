@@ -24,7 +24,7 @@ export function* paramNameGen(startI = 0): ParamNameGen {
 
 export class ParamBuilder<
   T extends ParamType = any,
-  V extends ParamTypeValue[T] = any
+  V = ParamTypeValue[T]
 > {
   static buildAll(builders: ParamBuilder[]): Param[];
   static buildAll(builders: ParamBuilderMap): ParamMap;
