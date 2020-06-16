@@ -5,7 +5,7 @@ export type OpValue = Param | string | number | boolean;
 
 export interface OperatorArgs {
   name: string;
-  subject: Subject;
+  subject?: Subject;
   value?: OpValue | OpValue[];
 }
 
@@ -18,7 +18,7 @@ export class Operator {
   }
 
   toString() {
-    const args: any[] = [this.subject];
+    const args: any[] = this.subject ? [this.subject] : [];
 
     if (this.value) {
       if (Array.isArray(this.value))

@@ -80,7 +80,7 @@ export class EdgeBuilder {
       return op.build(args => ({
         ...args,
         value: this.buildOpValue(args.value, pNameGen),
-        subject: this.keyToField(args.subject),
+        subject: args.subject ? this.keyToField(args.subject) : undefined,
       })) as R;
     } else if (op instanceof LogicalOperatorBuilder) {
       return op.build(args => ({
