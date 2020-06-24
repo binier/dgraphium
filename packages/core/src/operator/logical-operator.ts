@@ -9,7 +9,7 @@ export interface LogicalOperatorArgs {
 
 export interface LogicalOperator extends LogicalOperatorArgs { }
 export class LogicalOperator {
-  constructor(args: LogicalOperator) {
+  constructor(args: LogicalOperatorArgs) {
     Object.assign(this, args);
   }
 
