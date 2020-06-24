@@ -12,6 +12,10 @@ import { capitalize, RawProjection, Projection } from './common';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
+export interface BuildEdgeArgs {
+  pNameGen?: ParamNameGen;
+}
+
 /** should match EdgeBuilder's constructor */
 export interface EdgeBuilderConstructor {
   (edges: EdgeBuilder | RawProjection<EdgeBuilder>): EdgeBuilder;
@@ -37,12 +41,16 @@ export class EdgeBuilder {
     if (edges instanceof EdgeBuilder)
       return clone(edges);
 
+    this.setEdges(edges);
+  }
+
+  protected setEdges(edges: EdgeBuilder | RawProjection<EdgeBuilder>) {
     this.edges = Object.entries(edges)
       .reduce((r, [k ,v]) => {
         if (typeof v === 'object') r[k] = new EdgeBuilder(k, v);
         else r[k] = v;
         return r;
-      }, {})
+      }, {});
   }
 
   withArgs(args: ArgsBuilder | Omit<ArgsBuilderData, 'func'>) {
@@ -130,7 +138,7 @@ export class EdgeBuilder {
     ];
   }
 
-  build(pNameGen = paramNameGen()) {
+  protected buildEdgeArgs(pNameGen = paramNameGen()) {
     const args = this.args.build(argMap => {
       return Object.entries(argMap)
         .reduce((r, [k, v]) => {
@@ -144,17 +152,25 @@ export class EdgeBuilder {
 
     const edges = Object.entries(this.edges)
       .reduce((r, [k, v]) => {
-        if (v instanceof EdgeBuilder) r[k] = v.build(pNameGen);
+        if (v instanceof EdgeBuilder) r[k] = v.build({ pNameGen });
         else r[k] = v;
         return r;
       }, {});
 
-    return new Edge({
+    return {
       args,
       edges,
       filter: this._filter && this.buildOp(this._filter, pNameGen),
       type: this.type,
-    });
+    };
+  }
+
+  build<
+    A extends BuildEdgeArgs
+  >(args: Partial<A> = {}) {
+    return new Edge(
+      this.buildEdgeArgs(args.pNameGen)
+    );
   }
 
   /**
