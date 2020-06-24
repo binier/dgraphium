@@ -1,4 +1,5 @@
 import { Operator } from './operator';
+import { Param } from '../param';
 
 export type LogicalOperatorType = 'AND' | 'OR' | 'NOT';
 
@@ -11,6 +12,13 @@ export interface LogicalOperator extends LogicalOperatorArgs { }
 export class LogicalOperator {
   constructor(args: LogicalOperatorArgs) {
     Object.assign(this, args);
+  }
+
+  params(): Param[] {
+    return this.operators.reduce(
+      (r, x) => [...r, ...x.params()],
+      []
+    );
   }
 
   toString() {

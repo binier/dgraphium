@@ -4,10 +4,11 @@ import {
   LogicalOperator,
 } from '../operator';
 import { indenter, Projection } from './common';
+import { Param } from '../param';
 
 export type Filter = Operator | LogicalOperator;
 
-interface EdgeArgs {
+export interface EdgeArgs {
   edges: Projection<Edge>;
   type?: string;
   args?: Args;
@@ -17,12 +18,28 @@ interface EdgeArgs {
 export class Edge {
   protected type?: string;
   protected edges: Projection<Edge>;
+  protected _params: Param[];
   protected args: Args;
   protected filter?: Filter;
 
   constructor(args: EdgeArgs) {
     Object.assign(this, args);
     this.args = this.args || new Args();
+    this._params = this.params();
+  }
+
+  params(): Param[] {
+    const edgeParams: Param[] = Object.values(this.edges)
+      .reduce((r, x) => [
+        ...r,
+        ...(x instanceof Edge ? x.params() : []),
+      ], []);
+
+    return [
+      ...edgeParams,
+      ...this.args.params(),
+      ...(this.filter ? this.filter.params() : []),
+    ];
   }
 
   keyToField(key: string) {

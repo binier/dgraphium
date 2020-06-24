@@ -18,6 +18,11 @@ export class Operator {
       this.value = this.value[0];
   }
 
+  params(): Param[] {
+    return (Array.isArray(this.value) ? this.value : [this.value])
+      .filter(x => x instanceof Param) as Param[];
+  }
+
   toString() {
     const args: any[] = this.subject ? [this.subject] : [];
 

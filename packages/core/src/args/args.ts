@@ -1,5 +1,6 @@
 import { Uid } from '../uid';
 import { Operator } from '../operator';
+import { Param } from '../param';
 
 export interface ArgsData {
   func?: Operator;
@@ -18,6 +19,12 @@ export class Args {
   get first() { return this.args.first; }
   get offset() { return this.args.offset; }
   get after() { return this.args.after; }
+
+  params(): Param[] {
+    return Object.values(this.args)
+      .filter(x => x instanceof Param)
+      .concat(this.func.params());
+  }
 
   length() {
     return Object.values(this.args)
