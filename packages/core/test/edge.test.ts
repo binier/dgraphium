@@ -1,10 +1,9 @@
-import { EdgeBuilder } from '../src/edge';
-import { Uid } from '../src/uid';
+import { edge, Uid } from '../src';
 
 // does not test formatting
 describe('Edge test', () => {
   it('withArgs should yield same result as individually setting args', () => {
-    const edge = () => new EdgeBuilder('user', { id: 1 });
+    const edgeNew = () => edge('user', { id: 1 });
     const args = {
       first: 10,
       offset: 5,
@@ -12,11 +11,11 @@ describe('Edge test', () => {
     };
 
     expect(
-      edge()
+      edgeNew()
         .withArgs(args)
         .toString()
     ).toEqual(
-      edge()
+      edgeNew()
         .first(args.first)
         .offset(args.offset)
         .after(args.after)
@@ -30,8 +29,8 @@ describe('Edge test', () => {
       offset: 5,
       after: new Uid('0x1'),
     };
-    const edge = () => new EdgeBuilder('user', { id: 1 });
-    const edgeStrWithArgs = (...toExclude: string[]) => edge().withArgs({
+    const edgeNew = () => edge('user', { id: 1 });
+    const edgeStrWithArgs = (...toExclude: string[]) => edgeNew().withArgs({
       ...args,
       ...toExclude.reduce((r, x) => { r[x] = undefined; return r; }, {}),
     }).toString();
@@ -40,7 +39,7 @@ describe('Edge test', () => {
     };
     const regex = (str: string) => new RegExp(`\\(${str}\\)`);
 
-    expect(edge().toString().split('\n')[0].trim()).toEqual('{')
+    expect(edgeNew().toString().split('\n')[0].trim()).toEqual('{')
 
     expect(edgeStrWithArgsFirstLine('offset', 'after'))
       .toMatch(regex(`(first: ${args.first})`));
@@ -58,7 +57,7 @@ describe('Edge test', () => {
 
   it("should use nested edge's(!instanceof Edge) key as prefix", () => {
     expect(
-      new EdgeBuilder('user', {
+      edge('user', {
         id: 1,
         auth: {
           id: 1,
@@ -70,9 +69,9 @@ describe('Edge test', () => {
 
   it("should use nested edge's(instanceof Edge) type as prefix", () => {
     expect(
-      new EdgeBuilder('user', {
+      edge('user', {
         id: 1,
-        posts: new EdgeBuilder('post', {
+        posts: edge('post', {
           id: 1,
           text: 1,
         }),
@@ -82,7 +81,7 @@ describe('Edge test', () => {
 
   it("shouldn't append prefix fields if type is undefined", () => {
     expect(
-      new EdgeBuilder({
+      edge({
         id: 1,
         name: 1,
       }).toString()
@@ -90,19 +89,19 @@ describe('Edge test', () => {
   });
 
   it('should return cloned Edge when we pass instanceof Edge as argument', () => {
-    const edge = new EdgeBuilder('user', { id: 1 });
-    const cloned = new EdgeBuilder('user', edge);
-    edge.first(1);
+    const original = edge('user', { id: 1 });
+    const cloned = edge('user', original);
+    original.first(1);
     expect(cloned.toString()).not.toMatch(/(first: 1)/);
   });
 
   it("changes to nested edge shouldn't affect it's parent edge", () => {
-    const nested = new EdgeBuilder('post', { id: 1 });
-    const edge = new EdgeBuilder('user', {
+    const nested = edge('post', { id: 1 });
+    const parent = edge('user', {
       id: 1,
       post: nested,
     });
     nested.first(1);
-    expect(edge.toString()).not.toMatch(/(first: 1)/);
+    expect(parent.toString()).not.toMatch(/(first: 1)/);
   });
 });

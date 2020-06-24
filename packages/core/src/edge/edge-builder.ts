@@ -12,14 +12,18 @@ import { capitalize, RawProjection, Projection } from './common';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
+/** should match EdgeBuilder's constructor */
+export interface EdgeBuilderConstructor {
+  (edges: EdgeBuilder | RawProjection<EdgeBuilder>): EdgeBuilder;
+  (type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder>): EdgeBuilder;
+}
+
 export class EdgeBuilder {
   protected type?: string;
   protected edges: Projection<EdgeBuilder>;
   protected args: ArgsBuilder = new ArgsBuilder();
   protected _filter?: OpBuilders;
 
-  constructor(edges: EdgeBuilder | RawProjection<EdgeBuilder>);
-  constructor(type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder>);
   constructor(
     type?: string | EdgeBuilder | RawProjection<EdgeBuilder>,
     edges?: EdgeBuilder | RawProjection<EdgeBuilder>
