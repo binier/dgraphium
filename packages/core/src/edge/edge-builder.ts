@@ -13,15 +13,22 @@ import { capitalize, RawProjection, Projection } from './common';
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
 export class EdgeBuilder {
+  protected type?: string;
   protected edges: Projection<EdgeBuilder>;
   protected args: ArgsBuilder = new ArgsBuilder();
   protected _filter?: OpBuilders;
 
+  constructor(edges: EdgeBuilder | RawProjection<EdgeBuilder>);
+  constructor(type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder>);
   constructor(
-    protected type: string,
-    edges: EdgeBuilder | RawProjection<EdgeBuilder>
+    type?: string | EdgeBuilder | RawProjection<EdgeBuilder>,
+    edges?: EdgeBuilder | RawProjection<EdgeBuilder>
   ) {
-    this.type = capitalize(this.type);
+    if (type) {
+      if (typeof type !== 'string')
+        return new EdgeBuilder(undefined, type);
+      this.type = capitalize(type);
+    }
 
     if (edges instanceof EdgeBuilder)
       return clone(edges);
@@ -100,7 +107,9 @@ export class EdgeBuilder {
     if (['id', 'uid'].includes(key))
       return 'uid';
 
-    return `${this.type}.${key}`;
+    if (this.type)
+      return `${this.type}.${key}`;
+    return key;
   }
 
   paramBuilders(): ParamBuilder[] {

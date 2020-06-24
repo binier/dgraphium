@@ -80,6 +80,15 @@ describe('Edge test', () => {
     ).toMatch(/(text: Post\.text)/);
   });
 
+  it("shouldn't append prefix fields if type is undefined", () => {
+    expect(
+      new EdgeBuilder({
+        id: 1,
+        name: 1,
+      }).toString()
+    ).toMatch(/(name: name)/);
+  });
+
   it('should return cloned Edge when we pass instanceof Edge as argument', () => {
     const edge = new EdgeBuilder('user', { id: 1 });
     const cloned = new EdgeBuilder('user', edge);

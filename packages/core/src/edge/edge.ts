@@ -8,14 +8,14 @@ import { indenter, Projection } from './common';
 export type Filter = Operator | LogicalOperator;
 
 interface EdgeArgs {
-  type: string;
   edges: Projection<Edge>;
+  type?: string;
   args?: Args;
   filter?: Filter;
 }
 
 export class Edge {
-  protected type: string;
+  protected type?: string;
   protected edges: Projection<Edge>;
   protected args: Args;
   protected filter?: Filter;
@@ -29,7 +29,9 @@ export class Edge {
     if (['id', 'uid'].includes(key))
       return 'uid';
 
-    return `${this.type}.${key}`;
+    if (this.type)
+      return `${this.type}.${key}`;
+    return key;
   }
 
   toString(extraDepth = 0): string {
