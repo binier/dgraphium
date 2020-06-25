@@ -27,6 +27,9 @@ export class Query extends Edge {
   }
 
   queryStrWithParams() {
+    if (!this._params.length)
+      return this.queryStr();
+
     return `q(${
       Param.paramsDefineStr(this._params)
     }) {${
