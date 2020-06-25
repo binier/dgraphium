@@ -37,7 +37,8 @@ export class QueryBuilder extends EdgeBuilder {
   }
 
   project(projection: EdgeBuilder | RawProjection<EdgeBuilder>) {
-    return this.setEdges(projection);
+    this.setEdges(projection);
+    return this;
   }
 
   buildQueryArgs(pNameGen = paramNameGen(), qNameGen = queryNameGen()) {
