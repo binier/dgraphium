@@ -23,7 +23,7 @@ export class Args {
   params(): Param[] {
     return Object.values(this.args)
       .filter(x => x instanceof Param)
-      .concat(this.func.params());
+      .concat(this.func ? this.func.params() : []);
   }
 
   length() {
