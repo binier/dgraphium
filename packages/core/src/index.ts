@@ -1,4 +1,5 @@
 import { EdgeBuilder, EdgeBuilderConstructor } from './edge';
+import { QueryBuilder } from './query';
 
 export * from './uid';
 export * from './edge';
@@ -9,3 +10,7 @@ export * as params from './param/param-types';
 
 export const edge: EdgeBuilderConstructor =
   (...args: any[]) => new EdgeBuilder(...args);
+
+export const query = (
+  ...args: ConstructorParameters<typeof QueryBuilder>
+) => new QueryBuilder(...args);
