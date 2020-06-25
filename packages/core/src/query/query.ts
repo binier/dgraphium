@@ -28,14 +28,11 @@ export class Query extends Edge {
   }
 
   queryStrWithParams() {
-    if (!this._params.length)
-      return this.queryStr();
-
-    return `q(${
+    const defineParamLine = this._params.length ? `query q(${
       Param.paramsDefineStr(this._params)
-    }) {${
-      this.queryStr(1)
-    }\n}`;
+    }) ` : '';
+
+    return  `${defineParamLine}{\n${this.queryStr(1)}\n}`;
   }
 
   toString() {
