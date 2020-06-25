@@ -22,6 +22,7 @@ export class Query extends Edge {
 
     return indent(
       this.queryName
+      + (!this.args.length() ? '() ' : '')
       + this.projectionStr(extraDepth).trim()
     );
   }
