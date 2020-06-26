@@ -2,7 +2,7 @@ import { Param } from '../param';
 import { Uid } from '../uid';
 
 export type Subject = string;
-export type OpValue = Param | Uid | string | number | boolean;
+export type OpValue = Param | Uid | RegExp | string | number | boolean;
 
 export interface OperatorArgs {
   name: string;

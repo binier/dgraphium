@@ -15,8 +15,7 @@ export const has = (subject: Subject) =>
 export const eq = (
   subj: Subject, value: OpBuilderValue | OpBuilderValue[]
 ) =>
-  new OperatorBuilder({
-    name: 'eq',
-    subject: subj,
-    value: value,
-  });
+  new OperatorBuilder({ name: 'eq', subject: subj, value: value });
+
+export const regexp = (subject: Subject, pattern: RegExp) =>
+  new OperatorBuilder({ name: 'regexp', subject, value: pattern });
