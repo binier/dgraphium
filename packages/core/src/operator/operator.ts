@@ -23,15 +23,24 @@ export class Operator {
       .filter(x => x instanceof Param) as Param[];
   }
 
+  parseValue(value: any) {
+    if (typeof value === 'string')
+      return `"${value.replace(/"/g, '\\"')}"`;
+    return value;
+  }
+
   toString() {
     const args: any[] = this.subject ? [this.subject] : [];
 
     if (this.value) {
       if (Array.isArray(this.value)) {
-        const valueStr = this.value.join(', ');
+        const valueStr = this.value
+          .map(this.parseValue.bind(this))
+          .join(', ');
+
         args.push(this.subject ? `[${valueStr}]` : valueStr);
       } else {
-        args.push(this.value);
+        args.push(this.parseValue(this.value));
       }
     }
 
