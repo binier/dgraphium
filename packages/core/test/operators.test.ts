@@ -2,8 +2,8 @@ import { edge } from '../src';
 import {
   has, uid, eq,
   lte, lt, gte, gt,
-  allOfTerms,
-  anyOfTerms,
+  allOfTerms, anyOfTerms,
+  regexp,
 } from '../src/operators';
 
 describe('Operators test', () => {
@@ -62,5 +62,10 @@ describe('Operators test', () => {
       .toMatch(/allofterms\(animalType, "dog cat"\)/);
     expect(genMulti(anyOfTerms))
       .toMatch(/anyofterms\(animalType, "dog cat"\)/);
+  });
+
+  it('operator: `regexp`', () => {
+    expect(edge({}).filter(regexp('name', /zura/i)).toString())
+      .toMatch(/regexp\(name, \/zura\/i\)/)
   });
 });
