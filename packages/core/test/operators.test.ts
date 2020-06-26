@@ -1,5 +1,5 @@
 import { edge } from '../src';
-import { has, uid, eq } from '../src/operators';
+import { has, uid, eq, lte, lt, gte, gt } from '../src/operators';
 
 describe('Operators test', () => {
   it('should not prefix by type if edge has none', () => {
@@ -32,5 +32,13 @@ describe('Operators test', () => {
     expect(
       edge({}).filter(eq('name', ['zura', 'otherDude'])).toString()
     ).toMatch(/eq\(name, \["zura", "otherDude"\]\)/);
+  });
+
+  it('comparion operators: `lte`, `lt`, `gte`, `gt`', () => {
+    const gen = (op: Function) => edge({}).filter(op('age', 18)).toString();
+    expect(gen(lte)).toMatch(/le\(age, 18\)/);
+    expect(gen(lt)).toMatch(/lt\(age, 18\)/);
+    expect(gen(gte)).toMatch(/ge\(age, 18\)/);
+    expect(gen(gt)).toMatch(/gt\(age, 18\)/);
   });
 });
