@@ -1,5 +1,5 @@
 import { edge } from '../src';
-import { has, uid } from '../src/operators';
+import { has, uid, eq } from '../src/operators';
 
 describe('Operators test', () => {
   it('should not prefix by type if edge has none', () => {
@@ -22,5 +22,15 @@ describe('Operators test', () => {
     expect(
       edge({}).filter(uid('0x2', '0x3', '0x4')).toString()
     ).toMatch(/uid\(0x2, 0x3, 0x4\)/);
+  });
+
+  it('operator: `eq`', () => {
+    expect(
+      edge({}).filter(eq('name', 'zura')).toString()
+    ).toMatch(/eq\(name, "zura"\)/);
+
+    expect(
+      edge({}).filter(eq('name', ['zura', 'otherDude'])).toString()
+    ).toMatch(/eq\(name, \["zura", "otherDude"\]\)/);
   });
 });
