@@ -1,5 +1,10 @@
 import { edge } from '../src';
-import { has, uid, eq, lte, lt, gte, gt } from '../src/operators';
+import {
+  has, uid, eq,
+  lte, lt, gte, gt,
+  allOfTerms,
+  anyOfTerms,
+} from '../src/operators';
 
 describe('Operators test', () => {
   it('should not prefix by type if edge has none', () => {
@@ -40,5 +45,22 @@ describe('Operators test', () => {
     expect(gen(lt)).toMatch(/lt\(age, 18\)/);
     expect(gen(gte)).toMatch(/ge\(age, 18\)/);
     expect(gen(gt)).toMatch(/gt\(age, 18\)/);
+  });
+
+  it('term operators: `allOfTerms`, `anyOfTerms`', () => {
+    const genSingle = (op: Function) =>
+      edge({}).filter(op('animalType', 'dog')).toString();
+    const genMulti = (op: Function) =>
+      edge({}).filter(op('animalType', ['dog', 'cat'])).toString();
+
+    expect(genSingle(allOfTerms))
+      .toMatch(/allofterms\(animalType, "dog"\)/);
+    expect(genSingle(anyOfTerms))
+      .toMatch(/anyofterms\(animalType, "dog"\)/);
+
+    expect(genMulti(allOfTerms))
+      .toMatch(/allofterms\(animalType, "dog cat"\)/);
+    expect(genMulti(anyOfTerms))
+      .toMatch(/anyofterms\(animalType, "dog cat"\)/);
   });
 });
