@@ -3,7 +3,7 @@ import {
   has, uid, eq,
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
-  regexp,
+  regexp, match,
 } from '../src/operators';
 
 describe('Operators test', () => {
@@ -67,5 +67,10 @@ describe('Operators test', () => {
   it('operator: `regexp`', () => {
     expect(edge({}).filter(regexp('name', /zura/i)).toString())
       .toMatch(/regexp\(name, \/zura\/i\)/)
+  });
+
+  it('operator: `match`', () => {
+    expect(edge({}).filter(match('name', 'zura', 3)).toString())
+      .toMatch(/match\(name, "zura", 3\)/)
   });
 });
