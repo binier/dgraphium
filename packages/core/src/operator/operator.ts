@@ -27,10 +27,12 @@ export class Operator {
     const args: any[] = this.subject ? [this.subject] : [];
 
     if (this.value) {
-      if (Array.isArray(this.value))
-        args.push(`[${this.value.join(', ')}]`)
-      else
+      if (Array.isArray(this.value)) {
+        const valueStr = this.value.join(', ');
+        args.push(this.subject ? `[${valueStr}]` : valueStr);
+      } else {
         args.push(this.value);
+      }
     }
 
     return `${this.name}(${args.join(', ')})`;
