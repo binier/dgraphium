@@ -2,6 +2,7 @@ import { OperatorBuilder, OpBuilderValue, Subject } from '../operator';
 import { UidLike, Uid } from '../uid';
 
 export * from './comparison-operators';
+export * from './term-operators';
 
 export const uid = (...uids: UidLike[]) => new OperatorBuilder({
   name: 'uid',
