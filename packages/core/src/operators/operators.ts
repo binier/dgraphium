@@ -1,5 +1,6 @@
 import { OperatorBuilder, OpBuilderValue, Subject } from '../operator';
 import { UidLike, Uid } from '../uid';
+import { ParamBuilder } from '../param';
 
 export * from './comparison-operators';
 export * from './term-operators';
@@ -19,3 +20,15 @@ export const eq = (
 
 export const regexp = (subject: Subject, pattern: RegExp) =>
   new OperatorBuilder({ name: 'regexp', subject, value: pattern });
+
+export const match = (
+  subject: Subject,
+  value: string | ParamBuilder,
+  distance: number | ParamBuilder,
+) =>
+  new OperatorBuilder({
+    name: 'match',
+    subject: subject,
+    value: value,
+    arg: distance,
+  });

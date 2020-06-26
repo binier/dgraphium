@@ -1,11 +1,15 @@
-import { Operator, OperatorArgs, OpValue } from './operator';
+import { Operator, OperatorArgs, OpValue, OpArg } from './operator';
 import { Transformer } from '../utils';
 import { ParamBuilder } from '../param';
 
 export type OpBuilderValue = ParamBuilder | OpValue;
+export type OpBuilderArg = ParamBuilder | OpArg;
 
-export interface OperatorBuilderArgs extends Omit<OperatorArgs, 'value'> {
+export interface OperatorBuilderArgs
+  extends Omit<OperatorArgs, 'value' | 'arg'>
+{
   value?: OpBuilderValue | OpBuilderValue[];
+  arg?: OpBuilderArg;
 }
 
 export class OperatorBuilder {

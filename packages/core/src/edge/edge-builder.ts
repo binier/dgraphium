@@ -5,6 +5,7 @@ import {
   OpBuilderValue,
   OperatorBuilder,
   LogicalOperatorBuilder,
+  OpArg,
 } from '../operator';
 import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
@@ -99,6 +100,9 @@ export class EdgeBuilder {
       return op.build(args => ({
         ...args,
         value: this.buildOpValue(args.value, pNameGen),
+        arg: args.arg && args.arg instanceof ParamBuilder
+          ? this.buildParam(args.arg, pNameGen)
+          : args.arg as OpArg,
         subject: args.subject ? this.keyToField(args.subject) : undefined,
       })) as R;
     } else if (op instanceof LogicalOperatorBuilder) {

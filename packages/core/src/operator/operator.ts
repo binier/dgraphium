@@ -3,11 +3,13 @@ import { Uid } from '../uid';
 
 export type Subject = string;
 export type OpValue = Param | Uid | RegExp | string | number | boolean;
+export type OpArg = Param | string | number | boolean;
 
 export interface OperatorArgs {
   name: string;
   subject?: Subject;
   value?: OpValue | OpValue[];
+  arg?: OpArg;
 }
 
 export interface Operator extends OperatorArgs { }
@@ -43,6 +45,8 @@ export class Operator {
         args.push(this.parseValue(this.value));
       }
     }
+
+    if (this.arg) args.push(this.arg);
 
     return `${this.name}(${args.join(', ')})`;
   }
