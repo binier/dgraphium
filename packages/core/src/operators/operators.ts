@@ -18,9 +18,11 @@ export const uid = (...uids: UidLike[]) => new OperatorBuilder({
 export const has = (subject: Subject) =>
   new OperatorBuilder({ name: 'has', subject });
 
-export const eq = (subj: Subject, ...values: OpBuilderValue[]) =>
+export const eq = (
+  subj: Subject, value: OpBuilderValue | OpBuilderValue[]
+) =>
   new OperatorBuilder({
     name: 'eq',
     subject: subj,
-    value: values,
+    value: value,
   });
