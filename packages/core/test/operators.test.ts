@@ -3,6 +3,7 @@ import {
   has, uid, eq,
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
+  allOfText, anyOfText,
   regexp, match,
 } from '../src/operators';
 
@@ -62,6 +63,16 @@ describe('Operators test', () => {
       .toMatch(/allofterms\(animalType, "dog cat"\)/);
     expect(genMulti(anyOfTerms))
       .toMatch(/anyofterms\(animalType, "dog cat"\)/);
+  });
+
+  it('text operators: `allOfText`, `anyOfText`', () => {
+    const genSingle = (op: Function) =>
+      edge({}).filter(op('animalType', 'dog')).toString();
+
+    expect(genSingle(allOfText))
+      .toMatch(/alloftext\(animalType, "dog"\)/);
+    expect(genSingle(anyOfText))
+      .toMatch(/anyoftext\(animalType, "dog"\)/);
   });
 
   it('operator: `regexp`', () => {
