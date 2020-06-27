@@ -40,7 +40,10 @@ export class Operator {
           .map(this.parseValue.bind(this))
           .join(', ');
 
-        args.push(this.subject ? `[${valueStr}]` : valueStr);
+        if (this.subject && this.name !== 'uid_in')
+          args.push(`[${valueStr}]`);
+        else
+          args.push(valueStr);
       } else {
         args.push(this.parseValue(this.value));
       }

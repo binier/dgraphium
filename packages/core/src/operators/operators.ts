@@ -11,6 +11,14 @@ export const uid = (...uids: UidLike[]) => new OperatorBuilder({
   value: uids.map(x => new Uid(x)),
 });
 
+export const predUid = (
+  predicate: string, uids: UidLike | UidLike[]
+) => new OperatorBuilder({
+  name: 'uid_in',
+  subject: predicate,
+  value: (Array.isArray(uids) ? uids : [uids]).map(x => new Uid(x)),
+});
+
 export const has = (subject: Subject) =>
   new OperatorBuilder({ name: 'has', subject });
 
