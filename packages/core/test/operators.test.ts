@@ -1,6 +1,6 @@
 import { edge } from '../src';
 import {
-  has, uid, eq,
+  has, uid, predUid, eq,
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
   allOfText, anyOfText,
@@ -28,6 +28,16 @@ describe('Operators test', () => {
     expect(
       edge({}).filter(uid('0x2', '0x3', '0x4')).toString()
     ).toMatch(/uid\(0x2, 0x3, 0x4\)/);
+  });
+
+  it('operator: `predUid`', () => {
+    expect(
+      edge({}).filter(predUid('parent', '0x2')).toString()
+    ).toMatch(/uid_in\(parent, 0x2\)/);
+
+    expect(
+      edge({}).filter(predUid('parent', ['0x2', '0x3', '0x4'])).toString()
+    ).toMatch(/uid_in\(parent, 0x2, 0x3, 0x4\)/);
   });
 
   it('operator: `eq`', () => {
