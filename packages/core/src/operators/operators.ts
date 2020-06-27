@@ -4,6 +4,7 @@ import { ParamBuilder } from '../param';
 
 export * from './comparison-operators';
 export * from './term-operators';
+export * from './text-operators';
 
 export const uid = (...uids: UidLike[]) => new OperatorBuilder({
   name: 'uid',
