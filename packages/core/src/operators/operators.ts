@@ -6,6 +6,12 @@ export * from './comparison-operators';
 export * from './term-operators';
 export * from './text-operators';
 
+export const type = (type: string) =>
+  new OperatorBuilder({ name: 'type', subject: type });
+
+export const has = (subject: Subject) =>
+  new OperatorBuilder({ name: 'has', subject });
+
 export const uid = (...uids: UidLike[]) => new OperatorBuilder({
   name: 'uid',
   value: uids.map(x => new Uid(x)),
@@ -18,12 +24,6 @@ export const predUid = (
   subject: predicate,
   value: (Array.isArray(uids) ? uids : [uids]).map(x => new Uid(x)),
 });
-
-export const type = (type: string) =>
-  new OperatorBuilder({ name: 'type', subject: type });
-
-export const has = (subject: Subject) =>
-  new OperatorBuilder({ name: 'has', subject });
 
 export const eq = (
   subj: Subject, value: OpBuilderValue | OpBuilderValue[]
