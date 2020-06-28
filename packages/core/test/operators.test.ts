@@ -1,6 +1,6 @@
 import { edge } from '../src';
 import {
-  has, uid, predUid, eq,
+  has, type, uid, predUid, eq,
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
   allOfText, anyOfText,
@@ -18,6 +18,12 @@ describe('Operators test', () => {
     expect(
       edge('myType', {}).filter(has('myField')).toString()
     ).toMatch(/has\(MyType\.myField\)/)
+  });
+
+  it('operator: `type`', () => {
+    expect(
+      edge({}).filter(type('User')).toString()
+    ).toMatch(/type\(User\)/)
   });
 
   it('operator: `uid`', () => {
