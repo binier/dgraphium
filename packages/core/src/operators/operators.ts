@@ -19,6 +19,9 @@ export const predUid = (
   value: (Array.isArray(uids) ? uids : [uids]).map(x => new Uid(x)),
 });
 
+export const type = (type: string) =>
+  new OperatorBuilder({ name: 'type', subject: type });
+
 export const has = (subject: Subject) =>
   new OperatorBuilder({ name: 'has', subject });
 
