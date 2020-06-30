@@ -2,7 +2,7 @@ import { edge } from '../../src';
 import { uid } from '../../src/operators';
 import * as params from '../../src/param/param-types';
 
-describe('Operators test', () => {
+describe('Operator test - Param value', () => {
   it('operator: `uid` - single uid param', () => {
     const myEdge = edge({}).filter(uid(params.uid('0x2')));
     expect(myEdge.toString()).toMatch(/uid\(\$p1\)/);

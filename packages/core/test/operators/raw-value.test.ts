@@ -7,7 +7,7 @@ import {
   regexp, match,
 } from '../../src/operators';
 
-describe('Operators test', () => {
+describe('Operator test - Raw value', () => {
   it('operator: `has`', () => {
     expect(
       edge({}).filter(has('myField')).toString()

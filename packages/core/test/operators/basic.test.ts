@@ -1,7 +1,7 @@
 import { edge } from '../../src';
 import { has } from '../../src/operators';
 
-describe('Operators test', () => {
+describe('Operator test - Basic', () => {
   it('should not prefix by type if edge has none', () => {
     expect(
       edge({}).filter(has('myField')).toString()
