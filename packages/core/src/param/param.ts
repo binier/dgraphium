@@ -2,12 +2,12 @@ import { Uid } from '../uid';
 
 export interface ParamTypeValue {
   uid: Uid;
-  'uid[]': Uid[];
   string: string;
-  'string[]': string[];
   int: number;
   float: number;
   boolean: boolean;
+  'uid[]': Uid[];
+  'string[]': string[];
 }
 
 export type ParamType = keyof ParamTypeValue;
@@ -28,11 +28,13 @@ export class Param<
     private val: V
   ) { }
 
-  getInternalType() {
-    switch (this.type) {
+  getInternalType(type = this.type) {
+    // no internal types for arrays
+    if (type.endsWith('[]'))
+      return this.getInternalType(type.replace('[]', '') as any);
+
+    switch (type) {
       case 'uid': return 'string';
-      case 'uid[]': return 'string';
-      case 'string[]': return 'string';
       default: return this.type;
     }
   }
