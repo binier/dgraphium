@@ -18,7 +18,7 @@ function parseParamName(name: string) {
 export function* paramNameGen(startI = 0): ParamNameGen {
   const numGen = numberSeqGenerator(startI);
   while (true) {
-    yield 'g' + numGen.next().value;
+    yield 'p' + numGen.next().value;
   }
 }
 
