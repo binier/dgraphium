@@ -13,6 +13,10 @@ export function string(val: string) {
   return new ParamBuilder('string', val);
 }
 
+export function strings(...vals: string[]) {
+  return new ParamBuilder('string[]', vals);
+}
+
 export function int(val: number) {
   return new ParamBuilder('int', val);
 }

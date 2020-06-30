@@ -4,6 +4,7 @@ export interface ParamTypeValue {
   uid: Uid;
   'uid[]': Uid[];
   string: string;
+  'string[]': string[];
   int: number;
   float: number;
   boolean: boolean;
@@ -31,6 +32,7 @@ export class Param<
     switch (this.type) {
       case 'uid': return 'string';
       case 'uid[]': return 'string';
+      case 'string[]': return 'string';
       default: return this.type;
     }
   }
@@ -41,7 +43,13 @@ export class Param<
     if (this.val instanceof Uid)
       return this.val.toString();
     if (this.type === 'uid[]')
-      return `[${(this.val as any).join(', ')}]`
+      return `[${(this.val as any).join(', ')}]`;
+    if (this.type === 'string[]')
+      return `[${
+        (this.val as any)
+          .map(x => `"${x}"`)
+          .join(', ')
+      }]`;
     return this.val;
   }
 
