@@ -40,8 +40,6 @@ export class Param<
   }
 
   toString() {
-    if (this.val instanceof Uid) return `uid(${this.name})`;
-
     return this.name;
   }
 }
