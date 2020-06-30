@@ -1,7 +1,8 @@
 import { Uid } from '../uid';
 
 export interface ParamTypeValue {
-  uid: Uid | Uid[];
+  uid: Uid;
+  'uid[]': Uid[];
   string: string;
   int: number;
   float: number;
@@ -29,11 +30,20 @@ export class Param<
   getInternalType() {
     switch (this.type) {
       case 'uid': return 'string';
+      case 'uid[]': return 'string';
       default: return this.type;
     }
   }
 
   getName() { return this.name; }
+
+  getValue() {
+    if (this.val instanceof Uid)
+      return this.val.toString();
+    if (this.type === 'uid[]')
+      return `[${(this.val as any).join(', ')}]`
+    return this.val;
+  }
 
   defineStr() {
     return `${this.name}: ${this.getInternalType()}`;

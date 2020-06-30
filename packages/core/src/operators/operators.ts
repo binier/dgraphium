@@ -12,10 +12,11 @@ export const type = (type: string) =>
 export const has = (subject: Subject) =>
   new OperatorBuilder({ name: 'has', subject });
 
-export const uid = (...uids: UidLike[]) => new OperatorBuilder({
-  name: 'uid',
-  value: uids.map(x => new Uid(x)),
-});
+export const uid = (...uids: (UidLike | ParamBuilder<'uid' | 'uid[]'>)[]) =>
+  new OperatorBuilder({
+    name: 'uid',
+    value: uids.map(x => x instanceof ParamBuilder ? x : new Uid(x)),
+  });
 
 export const predUid = (
   predicate: string, uids: UidLike | UidLike[]

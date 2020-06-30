@@ -5,6 +5,10 @@ export function uid(uid: UidLike) {
   return new ParamBuilder('uid', new Uid(uid));
 }
 
+export function uids(...uids: UidLike[]) {
+  return new ParamBuilder('uid[]', uids.map(x => new Uid(x)));
+}
+
 export function string(val: string) {
   return new ParamBuilder('string', val);
 }
