@@ -35,9 +35,9 @@ describe('Operator test - Raw value', () => {
       edge({}).filter(predUid('parent', '0x2')).toString()
     ).toMatch(/uid_in\(parent, 0x2\)/);
 
-    expect(
-      edge({}).filter(predUid('parent', ['0x2', '0x3', '0x4'])).toString()
-    ).toMatch(/uid_in\(parent, 0x2, 0x3, 0x4\)/);
+    // expect(
+    //   edge({}).filter(predUid('parent', ['0x2', '0x3', '0x4'])).toString()
+    // ).toMatch(/uid_in\(parent, 0x2, 0x3, 0x4\)/);
   });
 
   it('operator: `eq`', () => {
