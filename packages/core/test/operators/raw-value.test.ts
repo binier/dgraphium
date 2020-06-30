@@ -1,11 +1,11 @@
-import { edge } from '../src';
+import { edge } from '../../src';
 import {
   has, type, uid, predUid, eq,
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
   allOfText, anyOfText,
   regexp, match,
-} from '../src/operators';
+} from '../../src/operators';
 
 describe('Operators test', () => {
   it('operator: `has`', () => {
