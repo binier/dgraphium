@@ -43,11 +43,9 @@ export class Param<
   getName() { return this.name; }
 
   getValue() {
-    if (this.val instanceof Uid || this.val instanceof RegExp)
-      return this.val.toString();
     if (this.type === 'uid[]')
       return `[${(this.val as any).join(', ')}]`;
-    return this.val;
+    return this.val.toString();
   }
 
   defineStr() {
