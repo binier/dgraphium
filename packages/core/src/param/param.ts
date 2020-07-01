@@ -7,7 +7,6 @@ export interface ParamTypeValue {
   float: number;
   boolean: boolean;
   'uid[]': Uid[];
-  'string[]': string[];
 }
 
 export type ParamType = keyof ParamTypeValue;
@@ -46,12 +45,6 @@ export class Param<
       return this.val.toString();
     if (this.type === 'uid[]')
       return `[${(this.val as any).join(', ')}]`;
-    if (this.type === 'string[]')
-      return `[${
-        (this.val as any)
-          .map(x => `"${x}"`)
-          .join(', ')
-      }]`;
     return this.val;
   }
 
