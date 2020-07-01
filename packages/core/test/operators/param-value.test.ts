@@ -1,5 +1,5 @@
 import { edge } from '../../src';
-import { uid, predUid } from '../../src/operators';
+import { uid, predUid, eq } from '../../src/operators';
 import * as params from '../../src/param/param-types';
 
 describe('Operator test - Param value', () => {
@@ -56,4 +56,21 @@ describe('Operator test - Param value', () => {
   //   expect(myEdge.toString()).toMatch(/uid_in\(parent, \$p1\)/);
   //   expect(myEdge.params()[0].getValue()).toEqual('[0x2, 0x3]');
   // });
+
+  it('operator: `eq` - single value param', () => {
+    const myEdge = edge({}).filter(eq('name', params.string('zura')));
+    expect(myEdge.toString()).toMatch(/eq\(name, \$p1\)/);
+    expect(myEdge.build().params()[0].getValue()).toEqual('zura');
+  });
+
+  it('operator: `eq` - multi value in separate params', () => {
+    const myEdge = edge({}).filter(
+      eq('name', [params.string('zura'), params.string('someOtherDude')])
+    ).build();
+    const myParams = myEdge.params();
+
+    expect(myEdge.toString()).toMatch(/eq\(name, \[\$p1, \$p2\]\)/);
+    expect(myParams[0].getValue()).toEqual('zura');
+    expect(myParams[1].getValue()).toEqual('someOtherDude');
+  });
 });
