@@ -21,7 +21,7 @@ export class Operator {
   }
 
   params(): Param[] {
-    return (Array.isArray(this.value) ? this.value : [this.value])
+    return [].concat(this.value, this.arg)
       .filter(x => x instanceof Param) as Param[];
   }
 

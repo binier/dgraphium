@@ -16,10 +16,8 @@ export class OperatorBuilder {
   constructor(private args: OperatorBuilderArgs) { }
 
   paramBuilders(): ParamBuilder[] {
-    const values = Array.isArray(this.args.value)
-      ? this.args.value : [this.args.value];
-
-    return values.filter(x => x instanceof ParamBuilder) as ParamBuilder[];
+    return [].concat(this.args.value, this.args.arg)
+      .filter(x => x instanceof ParamBuilder) as ParamBuilder[];
   }
 
   build(transform: Transformer<OperatorBuilderArgs, OperatorArgs>) {
