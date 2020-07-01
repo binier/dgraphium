@@ -1,5 +1,8 @@
 import { edge } from '../../src';
-import { uid, predUid, eq } from '../../src/operators';
+import {
+  uid, predUid, eq,
+  regex,
+} from '../../src/operators';
 import * as params from '../../src/param/param-types';
 
 describe('Operator test - Param value', () => {
@@ -72,5 +75,12 @@ describe('Operator test - Param value', () => {
     expect(myEdge.toString()).toMatch(/eq\(name, \[\$p1, \$p2\]\)/);
     expect(myParams[0].getValue()).toEqual('zura');
     expect(myParams[1].getValue()).toEqual('someOtherDude');
+  });
+
+  it('operator: `regex`', () => {
+    const myEdge = edge({}).filter(regex('name', params.regex(/zura/i)));
+    expect(myEdge.toString()).toMatch(/regexp\(name, \$p1\)/);
+    expect(myEdge.build().params()[0].getValue())
+      .toEqual('/zura/i');
   });
 });
