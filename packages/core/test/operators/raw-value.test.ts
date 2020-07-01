@@ -4,7 +4,7 @@ import {
   lte, lt, gte, gt,
   allOfTerms, anyOfTerms,
   allOfText, anyOfText,
-  regexp, match,
+  regex, match,
 } from '../../src/operators';
 
 describe('Operator test - Raw value', () => {
@@ -85,8 +85,8 @@ describe('Operator test - Raw value', () => {
       .toMatch(/anyoftext\(animalType, "dog"\)/);
   });
 
-  it('operator: `regexp`', () => {
-    expect(edge({}).filter(regexp('name', /zura/i)).toString())
+  it('operator: `regex`', () => {
+    expect(edge({}).filter(regex('name', /zura/i)).toString())
       .toMatch(/regexp\(name, \/zura\/i\)/)
   });
 
