@@ -6,6 +6,7 @@ export interface ParamTypeValue {
   int: number;
   float: number;
   boolean: boolean;
+  regex: RegExp;
   'uid[]': Uid[];
 }
 
@@ -34,6 +35,7 @@ export class Param<
 
     switch (type) {
       case 'uid': return 'string';
+      case 'regex': return 'string';
       default: return this.type;
     }
   }
@@ -41,7 +43,7 @@ export class Param<
   getName() { return this.name; }
 
   getValue() {
-    if (this.val instanceof Uid)
+    if (this.val instanceof Uid || this.val instanceof RegExp)
       return this.val.toString();
     if (this.type === 'uid[]')
       return `[${(this.val as any).join(', ')}]`;

@@ -41,7 +41,10 @@ export const eq = (
 ) =>
   new OperatorBuilder({ name: 'eq', subject: subj, value: value });
 
-export const regex = (subject: Subject, pattern: RegExp) =>
+export const regex = (
+  subject: Subject,
+  pattern: RegExp | ParamBuilder<'regex'>
+) =>
   new OperatorBuilder({ name: 'regexp', subject, value: pattern });
 
 export const match = (

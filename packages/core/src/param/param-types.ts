@@ -24,3 +24,7 @@ export function float(val: number) {
 export function bool(val: boolean) {
   return new ParamBuilder('boolean', val);
 }
+
+export function regex(pattern: RegExp) {
+  return new ParamBuilder('regex', pattern);
+}
