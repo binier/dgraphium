@@ -1,5 +1,5 @@
-import { ParamBuilder } from './param-builder';
-import { UidLike, Uid } from '../uid';
+import { ParamBuilder } from './param';
+import { UidLike, Uid } from './uid';
 
 export function uid(uid: UidLike) {
   return new ParamBuilder('uid', new Uid(uid));

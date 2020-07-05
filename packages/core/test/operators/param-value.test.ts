@@ -3,7 +3,7 @@ import {
   uid, predUid, eq,
   regex, match,
 } from '../../src/operators';
-import * as params from '../../src/param/param-types';
+import * as params from '../../src/params';
 
 describe('Operator test - Param value', () => {
   it('operator: `uid` - single uid param', () => {
