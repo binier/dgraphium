@@ -78,7 +78,7 @@ export class EdgeBuilder {
   }
 
   protected buildParam(builder: ParamBuilder, pNameGen: ParamNameGen) {
-    return builder.build(pNameGen.next().value);
+    return builder.build(pNameGen.next(builder));
   }
 
   protected buildOpValue(
