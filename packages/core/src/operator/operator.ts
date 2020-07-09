@@ -2,7 +2,8 @@ import { Param } from '../param';
 import { Uid } from '../uid';
 
 export type Subject = string;
-export type OpValue = Param | Uid | RegExp | string | number | boolean;
+export type OpValue = Param | Uid | RegExp | Date
+  | string | number | boolean;
 export type OpArg = Param | string | number | boolean;
 
 export interface OperatorArgs {
@@ -28,6 +29,8 @@ export class Operator {
   parseValue(value: any) {
     if (typeof value === 'string')
       return `"${value.replace(/"/g, '\\"')}"`;
+    if (value instanceof Date)
+      return value.toISOString();
     return value;
   }
 
