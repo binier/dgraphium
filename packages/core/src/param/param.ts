@@ -2,6 +2,7 @@ import { Uid } from '../uid';
 
 export interface ParamTypeValue {
   uid: Uid;
+  date: Date;
   string: string;
   int: number;
   float: number;
@@ -15,7 +16,7 @@ export type ParamMap = { [name: string]: Param };
 
 export class Param<
   T extends ParamType = any,
-  V = ParamTypeValue[T]
+  V extends ParamTypeValue[T] = ParamTypeValue[T]
 > {
   static paramsDefineStr(params: Param[] | ParamMap): string {
     if (!Array.isArray(params)) params = Object.values(params);
@@ -36,6 +37,7 @@ export class Param<
     switch (type) {
       case 'uid': return 'string';
       case 'regex': return 'string';
+      case 'date': return 'string';
       default: return this.type;
     }
   }
@@ -45,6 +47,8 @@ export class Param<
   getValue() {
     if (this.type === 'uid[]')
       return `[${(this.val as any).join(', ')}]`;
+    if (this.val instanceof Date)
+      return this.val.toISOString();
     return this.val.toString();
   }
 
