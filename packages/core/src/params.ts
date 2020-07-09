@@ -9,6 +9,10 @@ export function uids(...uids: UidLike[]) {
   return new ParamBuilder('uid[]', uids.map(x => new Uid(x)));
 }
 
+export function date(val: Date | string | number) {
+  return new ParamBuilder('date', new Date(val));
+}
+
 export function string(val: string) {
   return new ParamBuilder('string', val);
 }
