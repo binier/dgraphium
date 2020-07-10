@@ -196,3 +196,20 @@ query('user') // <- type User
       .filter(gt('replyCount', 2)),
   })
 ```
+
+### Combine queries
+
+you can combine queries with:
+```typescript
+import { combine } from '@dgraphium/core';
+
+const combinedQuery = combine(
+  query1,
+  query2,
+  ...
+);
+```
+
+**Note**:
+  - don't call `build` method on query before passing to `combine` function.
+  - query names should be unique.
