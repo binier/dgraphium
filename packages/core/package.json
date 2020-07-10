@@ -7,6 +7,10 @@
   "files": [
     "dist/*"
   ],
+  "author": {
+    "name": "Zura Benashvili",
+    "email": "zura.benashvili@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/binier/dgraphium.git",
