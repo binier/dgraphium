@@ -14,6 +14,7 @@ const omitKeys = (keys, obj) => {
 module.exports = {
   localsDefaults: {
     baseName: '@' + pkg.name,
+    author: pkg.author,
     license: pkg.license,
     publishAccess: 'public',
     repository: pkg.repository,

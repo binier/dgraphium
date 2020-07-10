@@ -10,6 +10,7 @@ to: packages/<%= name %>/package.json
   "files": [
     "dist/*"
   ],
+  "author": author,
   "repository": {
     ...repository,
     directory: 'packages/' + name
