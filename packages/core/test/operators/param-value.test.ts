@@ -1,7 +1,8 @@
 import { edge } from '../../src';
 import {
-  uid, predUid, eq,
+  uid, predUid, eq, gt,
   regex, match,
+  and, or, not,
 } from '../../src/operators';
 import * as params from '../../src/params';
 
@@ -93,5 +94,22 @@ describe('Operator test - Param value', () => {
     expect(myEdge.toString()).toMatch(/match\(name, \$p1, \$p2\)/);
     expect(myParams[0].getValue()).toEqual('zur');
     expect(myParams[1].getValue()).toEqual('3');
+  });
+
+  it('logical operators', () => {
+    const myEdge = edge({}).filter(
+      and(
+        or(
+          uid(params.uid('0x2')),
+          eq('name', params.string('zura'))
+        ),
+        not(gt('age', params.int(18)))
+      )
+    ).build();
+    const myParams = myEdge.params();
+    expect(myEdge.toString()).toMatch(/\(uid\(\$p1\) OR eq\(name, \$p2\)\) AND \(NOT gt\(age, \$p3\)\)/);
+    expect(myParams[0].getValue()).toEqual('0x2');
+    expect(myParams[1].getValue()).toEqual('zura');
+    expect(myParams[2].getValue()).toEqual('18');
   });
 });
