@@ -108,7 +108,7 @@ export class EdgeBuilder {
     } else if (op instanceof LogicalOperatorBuilder) {
       return op.build(args => ({
         ...args,
-        operators: args.operators.map(this.buildOp.bind(this)),
+        operators: args.operators.map(x => this.buildOp(x, pNameGen)),
       })) as R;
     }
     throw Error('invalid `op`');
