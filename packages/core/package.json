@@ -19,6 +19,18 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "dgraphium",
+    "dgraph",
+    "graph",
+    "database",
+    "query",
+    "builder",
+    "querybuilder",
+    "query-builder",
+    "orm",
+    "typescript"
+  ],
   "scripts": {
     "clean:dist": "rimraf dist",
     "compile": "tsc -b tsconfig.build.json",
