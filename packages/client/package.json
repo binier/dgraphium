@@ -42,6 +42,10 @@
   },
   "dependencies": {
     "dgraph-js": "^20.3.0",
-    "google-protobuf": "^3.12.2"
+    "google-protobuf": "^3.8.0",
+    "grpc": "^1.21.1"
+  },
+  "peerDependencies": {
+    "grpc": ">=1.7.0 <2.0.0"
   }
 }
