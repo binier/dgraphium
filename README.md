@@ -6,3 +6,4 @@ for [Dgraph](https://github.com/dgraph-io/dgraph) (General purpose distributed g
 ## Tools
 
 - **@dgraphium/core**  QueryBuilder: [docs](packages/core).
+- **@dgraphium/client**  Dgraph gRPC Client: [docs](packages/client).
