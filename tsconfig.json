@@ -7,8 +7,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@dgraphium/core/*": ["packages/core/src/*"],
-      "@dgraphium/client/*": ["packages/client/src/*"]
+      "@dgraphium/core": ["packages/core/src"],
+      "@dgraphium/client": ["packages/client/src"]
     }
   }
 }
