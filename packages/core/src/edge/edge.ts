@@ -1,18 +1,17 @@
 import { Args } from '../args';
-import {
-  Operator,
-  LogicalOperator,
-} from '../operator';
 import { indenter, Projection } from './common';
 import { Param } from '../param';
+import { Directive } from '../directive/directive';
 
-export type Filter = Operator | LogicalOperator;
+interface ParamsExtractable {
+  params(): Param[];
+}
 
 export interface EdgeArgs {
   edges: Projection<Edge>;
+  directives: Record<string, Directive>;
   type?: string;
   args?: Args;
-  filter?: Filter;
 }
 
 export class Edge {
@@ -20,7 +19,7 @@ export class Edge {
   protected edges: Projection<Edge>;
   protected _params: Param[];
   protected args: Args;
-  protected filter?: Filter;
+  protected directives: Record<string, Directive> = {};
 
   constructor(args: EdgeArgs) {
     Object.assign(this, args);
@@ -29,17 +28,13 @@ export class Edge {
   }
 
   params(): Param[] {
-    const edgeParams: Param[] = Object.values(this.edges)
-      .reduce((r, x) => [
-        ...r,
-        ...(x instanceof Edge ? x.params() : []),
-      ], []);
-
-    return [
-      ...edgeParams,
-      ...this.args.params(),
-      ...(this.filter ? this.filter.params() : []),
+    const withParams: ParamsExtractable[] = [
+      this.args,
+      ...Object.values(this.edges).filter(x => x instanceof Edge) as Edge[],
+      ...Object.values(this.directives),
     ];
+
+    return withParams.reduce((r, x) => [...r, ...x.params()], []);
   }
 
   keyToField(key: string) {
@@ -73,11 +68,11 @@ export class Edge {
     const argsStr = !this.args.length() ? ''
       : `(${this.args.toString()}) `;
 
-    const filterStr = !this.filter ? ''
-      : `@filter(${this.filter}) `;
+    const directivesStr = Object.values(this.directives)
+      .reduce((r, x) => r + x + ' ', '');
 
     return [
-      rootIndent(`${argsStr}${filterStr}{`.trim()),
+      rootIndent(`${argsStr}${directivesStr}{`.trim()),
       ...projectionLines,
       rootIndent('}'),
     ].join('\n');

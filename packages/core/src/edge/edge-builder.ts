@@ -10,6 +10,7 @@ import {
 import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
 import { capitalize, RawProjection, Projection } from './common';
+import { DirectiveBuilder } from '../directive';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
@@ -26,8 +27,8 @@ export interface EdgeBuilderConstructor {
 export class EdgeBuilder {
   protected type?: string;
   protected edges: Projection<EdgeBuilder>;
+  protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
-  protected _filter?: OpBuilders;
 
   constructor(
     type?: string | EdgeBuilder | RawProjection<EdgeBuilder>,
@@ -115,7 +116,7 @@ export class EdgeBuilder {
   }
 
   filter(opBuilder: OpBuilders) {
-    this._filter = opBuilder;
+    this.directives.filter = new DirectiveBuilder('filter', opBuilder);
     return this;
   }
 
@@ -150,7 +151,11 @@ export class EdgeBuilder {
     return {
       args,
       edges,
-      filter: this._filter && this.buildOp(this._filter, pNameGen),
+      directives: Object.entries(this.directives)
+        .reduce((r, [k, v]) => {
+          r[k] = v.build(op => this.buildOp(op, pNameGen))
+          return r;
+        }, {}),
       type: this.type,
     };
   }
