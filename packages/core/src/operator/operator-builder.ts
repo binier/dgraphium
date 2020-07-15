@@ -15,11 +15,6 @@ export interface OperatorBuilderArgs
 export class OperatorBuilder {
   constructor(private args: OperatorBuilderArgs) { }
 
-  paramBuilders(): ParamBuilder[] {
-    return [].concat(this.args.value, this.args.arg)
-      .filter(x => x instanceof ParamBuilder) as ParamBuilder[];
-  }
-
   build(transform: Transformer<OperatorBuilderArgs, OperatorArgs>) {
     return new Operator(transform(this.args));
   }

@@ -21,12 +21,6 @@ export class ArgsBuilder {
   get offset() { return this.args.offset; }
   get after() { return this.args.after; }
 
-  paramBuilders() {
-    if (this.args.func instanceof OperatorBuilder)
-      return this.args.func.paramBuilders();
-    return [];
-  }
-
   length() {
     return Object.values(this.args)
       .filter(x => x)
