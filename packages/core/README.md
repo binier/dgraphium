@@ -48,17 +48,16 @@ const meQuery = query()
 }
 ```
 
-run query with [dgraph-js](https://github.com/dgraph-io/dgraph-js):
+run query with [@dgraphium/client](../client):
 ```typescript
-await dgraphClient.newTxn().query(meQuery.toString());
+await dgraphClient.newTxn().query(meQuery);
 ```
 
 ### use GraphQL Variables(params) in query
 
 ```typescript
-import { query, edge } from '@dgraphium/core';
+import { query, edge, params } from '@dgraphium/core';
 import { uid, regex, gt, gte, lt, and, or } from '@dgraphium/core/operators';
-import * as params from '@dgraphium/core/params';
 
 const meQuery = query()
   .name('me')
@@ -87,10 +86,6 @@ const meQuery = query()
   })
   .first(1)
   .build();
-console.log(meQuery.toString())
-console.log(new Map(
-  meQuery.params().map(x => [x.getName(), x.getValue()])
-));
 ```
 `meQuery.toString()` outputs (built query string):
 ```graphql
@@ -106,21 +101,22 @@ query q($p2: string, $p1: string, $p3: string, $p4: string, $p5: int, $p6: int) 
   }
 }
 ```
-
-to build varsMap for **dgraph-js** client:
+run query with [@dgraphium/client](../client):
 ```typescript
-const varsMap = new Map(
-  meQuery.params().map(x => [x.getName(), x.getValue()])
-)
+await dgraphClient.newTxn().query(meQuery); // params will be included
 ```
 
-run query with [dgraph-js](https://github.com/dgraph-io/dgraph-js):
-```typescript
-await dgraphClient.newTxn().queryWithVars(
-  meQuery.toString(),
-  varsMap
-);
-```
+> **Note:** you can name parameters by: `params.[paramType](...).name(paramName)`.
+> For example: `params.string('strValue').name('myParamName')`. 
+> This is useful when you want to reuse query and override parameters:
+>
+> for example: 
+> ```typescript
+> await dgraphClient.newTxn().queryWithVars(
+>   queryWithParam,
+>   { '$myParam': 'newStringValue' } 
+> );
+> ```
 
 ### GraphQL types
 if you have [GraphQL schema](https://graphql.dgraph.io/schema),
