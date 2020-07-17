@@ -3,6 +3,7 @@ import { ArgsBuilderData } from '../args';
 import { numberSeqGenerator } from '../utils';
 import { paramNameGen } from '../param';
 import { Query } from './query';
+import { DirectiveBuilder } from '../directive';
 
 export type QueryNameGen = Generator<string, string>;
 
@@ -33,6 +34,11 @@ export class QueryBuilder extends EdgeBuilder {
 
   func(func: ArgsBuilderData['func']) {
     this.args.setArg('func', func);
+    return this;
+  }
+
+  ignoreReflex() {
+    this.directives.ignoreReflex = new DirectiveBuilder('ignoreReflex', undefined);
     return this;
   }
 

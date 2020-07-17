@@ -4,6 +4,7 @@ import { Param } from '../param';
 export interface DirectiveArgs {
   filter: LogicalOperator | Operator;
   cascade: undefined;
+  ignoreReflex: undefined;
 }
 
 export class Directive<T extends keyof DirectiveArgs = any> {
