@@ -4,6 +4,7 @@ import { DirectiveArgs, Directive } from './directive';
 
 export interface DirectiveBuilderArgs {
   filter: LogicalOperatorBuilder | OperatorBuilder;
+  cascade: undefined;
 }
 
 export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = any> {

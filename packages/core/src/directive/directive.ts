@@ -3,6 +3,7 @@ import { Param } from '../param';
 
 export interface DirectiveArgs {
   filter: LogicalOperator | Operator;
+  cascade: undefined;
 }
 
 export class Directive<T extends keyof DirectiveArgs = any> {
@@ -16,6 +17,8 @@ export class Directive<T extends keyof DirectiveArgs = any> {
   }
 
   params(): Param[] {
+    if (!this.hasArgs()) return [];
+
     return Array.isArray(this.args)
       ? this.args.reduce((r, x) => [...r, ...x.params()], [])
       : this.args.params();

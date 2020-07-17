@@ -120,6 +120,11 @@ export class EdgeBuilder {
     return this;
   }
 
+  cascade() {
+    this.directives.cascade = new DirectiveBuilder('cascade', undefined);
+    return this;
+  }
+
   keyToField(key: string) {
     if (['id', 'uid'].includes(key))
       return 'uid';
@@ -153,7 +158,8 @@ export class EdgeBuilder {
       edges,
       directives: Object.entries(this.directives)
         .reduce((r, [k, v]) => {
-          r[k] = v.build(op => this.buildOp(op, pNameGen))
+          r[k] = v.build(op =>
+            !op ? op : this.buildOp(op, pNameGen));
           return r;
         }, {}),
       type: this.type,
