@@ -1,4 +1,4 @@
-# Dgraphium Client (gRPC)
+# Dgraphium Client (gRPC) [![npm version](https://badge.fury.io/js/%40dgraphium%2Fclient.svg)](https://badge.fury.io/js/%40dgraphium%2Fclient)
 
 Dgraph client compatible with [Dgraphium Core (QueryBuilder)](../core).
 It's simply a customized version of [dgraph-js](https://github.com/dgraph-io/dgraph-js)

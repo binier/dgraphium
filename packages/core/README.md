@@ -1,4 +1,4 @@
-# Dgraphium Core (QueryBuilder)
+# Dgraphium Core (QueryBuilder) [![npm version](https://badge.fury.io/js/%40dgraphium%2Fcore.svg)](https://badge.fury.io/js/%40dgraphium%2Fcore)
 
 Query builder for Dgraph database.
 
