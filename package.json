@@ -25,7 +25,7 @@
     "test:prod": "yarn lint && lerna run test -- --no-cache",
     "release": "lerna version",
     "prerelease": "lerna version prerelease --preid next",
-    "publish": "lerna publish from-git --yes --npm-client yarn",
+    "publish": "lerna publish from-git --yes",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz"
   },
