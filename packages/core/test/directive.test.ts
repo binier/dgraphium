@@ -1,4 +1,4 @@
-import { edge } from '../src';
+import { query, edge } from '../src';
 import { has } from '../src/operators';
 
 // does not test formatting
@@ -10,5 +10,10 @@ describe('Directive test', () => {
     expect(
       edge({}).filter(has('name')).cascade().toString()
     ).toMatch(/@filter\(has\(name\)\) @cascade \{/);
+  });
+
+  it('`@ignoreReflex` directive', () => {
+    expect(query().ignoreReflex().toString())
+      .toMatch(/@ignoreReflex \{/);
   });
 });
