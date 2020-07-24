@@ -1,15 +1,29 @@
-import { EdgeBuilder, RawProjection, BuildEdgeArgs } from '../edge';
+import {
+  EdgeBuilder,
+  RawProjection,
+  BuildEdgeArgs,
+  NameGenerators as EdgeNameGenerators,
+  defaultNameGen as edgeDefaultNameGen,
+} from '../edge';
 import { ArgsBuilderData } from '../args';
 import { numberSeqGenerator } from '../utils';
-import { paramNameGen } from '../param';
 import { Query } from './query';
 import { DirectiveBuilder } from '../directive';
 
 export type QueryNameGen = Generator<string, string>;
 
-export interface BuildQueryArgs extends BuildEdgeArgs {
-  qNameGen?: QueryNameGen;
+export interface NameGenerators extends EdgeNameGenerators {
+  query?: QueryNameGen;
 }
+
+export interface BuildQueryArgs extends BuildEdgeArgs {
+  nameGen?: NameGenerators;
+}
+
+export const defaultNameGen = (): NameGenerators => ({
+  ...edgeDefaultNameGen(),
+  query: queryNameGen(),
+});
 
 export function* queryNameGen(startI = 0): QueryNameGen {
   const numGen = numberSeqGenerator(startI);
@@ -47,10 +61,11 @@ export class QueryBuilder extends EdgeBuilder {
     return this;
   }
 
-  buildQueryArgs(pNameGen = paramNameGen(), qNameGen = queryNameGen()) {
+  buildQueryArgs(nameGen?: NameGenerators) {
+    nameGen = Object.assign(defaultNameGen(), nameGen);
     return {
-      ...super.buildEdgeArgs(pNameGen),
-      queryName: this.queryName || qNameGen.next().value,
+      ...super.buildEdgeArgs(nameGen),
+      queryName: this.queryName || nameGen.query.next().value,
     };
   }
 
@@ -58,7 +73,7 @@ export class QueryBuilder extends EdgeBuilder {
     A extends BuildQueryArgs
   >(args: Partial<A> = {}) {
     return new Query(
-      this.buildQueryArgs(args.pNameGen, args.qNameGen)
+      this.buildQueryArgs(args.nameGen)
     );
   }
 }

@@ -14,9 +14,17 @@ import { DirectiveBuilder } from '../directive';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
-export interface BuildEdgeArgs {
-  pNameGen?: ParamNameGen;
+export interface NameGenerators {
+  param: ParamNameGen;
 }
+
+export interface BuildEdgeArgs {
+  nameGen?: NameGenerators;
+}
+
+export const defaultNameGen = (): NameGenerators => ({
+  param: paramNameGen(),
+});
 
 /** should match EdgeBuilder's constructor */
 export interface EdgeBuilderConstructor {
@@ -84,32 +92,32 @@ export class EdgeBuilder {
 
   protected buildOpValue(
     value: (OpBuilderValue | OpBuilderValue[]),
-    pNameGen: ParamNameGen
+    nameGen: NameGenerators
   ): OpValue | OpValue[] {
     if (Array.isArray(value))
-      return value.map(x => this.buildOpValue(x, pNameGen) as OpValue);
+      return value.map(x => this.buildOpValue(x, nameGen) as OpValue);
     if (value instanceof ParamBuilder)
-      return this.buildParam(value, pNameGen);
+      return this.buildParam(value, nameGen.param);
     return value;
   }
 
   protected buildOp<
     T extends OpBuilders,
     R extends ReturnType<T['build']>
-  >(op: T, pNameGen: ParamNameGen): R {
+  >(op: T, nameGen: NameGenerators): R {
     if (op instanceof OperatorBuilder) {
       return op.build(args => ({
         ...args,
-        value: this.buildOpValue(args.value, pNameGen),
+        value: this.buildOpValue(args.value, nameGen),
         arg: args.arg && args.arg instanceof ParamBuilder
-          ? this.buildParam(args.arg, pNameGen)
+          ? this.buildParam(args.arg, nameGen.param)
           : args.arg as OpArg,
         subject: args.subject ? this.keyToField(args.subject) : undefined,
       })) as R;
     } else if (op instanceof LogicalOperatorBuilder) {
       return op.build(args => ({
         ...args,
-        operators: args.operators.map(x => this.buildOp(x, pNameGen)),
+        operators: args.operators.map(x => this.buildOp(x, nameGen)),
       })) as R;
     }
     throw Error('invalid `op`');
@@ -134,12 +142,14 @@ export class EdgeBuilder {
     return key;
   }
 
-  protected buildEdgeArgs(pNameGen = paramNameGen()) {
+  protected buildEdgeArgs(nameGen?: NameGenerators) {
+    nameGen = Object.assign(defaultNameGen(), nameGen);
+
     const args = this.args.build(argMap => {
       return Object.entries(argMap)
         .reduce((r, [k, v]) => {
           if (v instanceof OperatorBuilder || v instanceof LogicalOperatorBuilder)
-            r[k] = this.buildOp(v, pNameGen);
+            r[k] = this.buildOp(v, nameGen);
           else
             r[k] = v;
           return r;
@@ -148,7 +158,7 @@ export class EdgeBuilder {
 
     const edges = Object.entries(this.edges)
       .reduce((r, [k, v]) => {
-        if (v instanceof EdgeBuilder) r[k] = v.build({ pNameGen });
+        if (v instanceof EdgeBuilder) r[k] = v.build({ nameGen });
         else r[k] = v;
         return r;
       }, {});
@@ -159,7 +169,7 @@ export class EdgeBuilder {
       directives: Object.entries(this.directives)
         .reduce((r, [k, v]) => {
           r[k] = v.build(op =>
-            !op ? op : this.buildOp(op, pNameGen));
+            !op ? op : this.buildOp(op, nameGen));
           return r;
         }, {}),
       type: this.type,
@@ -170,7 +180,7 @@ export class EdgeBuilder {
     A extends BuildEdgeArgs
   >(args: Partial<A> = {}) {
     return new Edge(
-      this.buildEdgeArgs(args.pNameGen)
+      this.buildEdgeArgs(args.nameGen)
     );
   }
 

@@ -7,12 +7,14 @@ export class CombinedQuery {
   private _params: Param[];
 
   constructor(queries: (string | QueryBuilder)[]) {
-    const qNameGen = queryNameGen();
-    const pNameGen = paramNameGen();
+    const nameGen = {
+      param: paramNameGen(),
+      query: queryNameGen(),
+    }
 
     this.queries = queries.map(query => {
       if (typeof query === 'string') return query;
-      return query.build({ qNameGen, pNameGen });
+      return query.build({ nameGen });
     });
     this._params = this.params();
   }
