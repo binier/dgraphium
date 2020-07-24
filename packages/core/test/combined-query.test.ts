@@ -6,7 +6,7 @@ describe('Query test', () => {
     const q = combined(
       query('user'),
       query('post')
-    );
+    ).build();
     expect(q.toString()).toMatch(/q1\(.*\)/);
     expect(q.toString()).toMatch(/q2\(.*\)/);
   });
@@ -15,7 +15,7 @@ describe('Query test', () => {
     const q = combined(
       query('user').func(uid(params.uid('0x2'))),
       query('user').func(uid(params.uid('0x3')))
-    );
+    ).build();
     expect(q.toString()).toMatch(/q1\(func: uid\(\$p1\)\)/);
     expect(q.toString()).toMatch(/q2\(func: uid\(\$p2\)\)/);
   });
@@ -25,7 +25,7 @@ describe('Query test', () => {
     const q = combined(
       query('user').func(uid(uidParam)),
       query('user').func(uid(uidParam))
-    );
+    ).build();
     expect(q.toString()).toMatch(/q1\(func: uid\(\$p1\)\)/);
     expect(q.toString()).toMatch(/q2\(func: uid\(\$p1\)\)/);
   });

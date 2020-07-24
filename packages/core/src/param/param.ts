@@ -18,8 +18,9 @@ export class Param<
   T extends ParamType = any,
   V extends ParamTypeValue[T] = ParamTypeValue[T]
 > {
-  static paramsDefineStr(params: Param[] | ParamMap): string {
-    if (!Array.isArray(params)) params = Object.values(params);
+  static paramsDefineStr(params: Readonly<Param[]> | Readonly<ParamMap>): string {
+    if (!Array.isArray(params))
+      return Param.paramsDefineStr(Object.values(params));
     return params.map(x => x.defineStr()).join(', ');
   }
 

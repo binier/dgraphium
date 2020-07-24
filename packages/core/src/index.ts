@@ -1,5 +1,5 @@
 import { EdgeBuilder, EdgeBuilderConstructor } from './edge';
-import { QueryBuilder, CombinedQuery } from './query';
+import { QueryBuilder, CombinedQueryBuilder } from './query';
 
 export * from './uid';
 export * from './edge';
@@ -16,5 +16,5 @@ export const query = (
 ) => new QueryBuilder(...args);
 
 export const combined = (
-  ...queries: (string | QueryBuilder)[]
-) => new CombinedQuery(queries);
+  ...queries: (string | QueryBuilder | CombinedQueryBuilder)[]
+) => new CombinedQueryBuilder(queries);
