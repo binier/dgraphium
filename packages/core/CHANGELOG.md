@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.1.1...@dgraphium/core@0.2.0) (2020-07-24)
+
+
+### Bug Fixes
+
+* **core:** typo. combined query missing params define line ([e3793ad](https://github.com/binier/dgraphium/commit/e3793ad674368c5aee3cb27f9849914403c0077c))
+
+
+### Features
+
+* **core:** generalize `filter` into `Directive` ([a4e506b](https://github.com/binier/dgraphium/commit/a4e506b2a64f91c267219e41e2f28ee2b7c7bbe6))
+* **core:** implement [@cascade](https://github.com/cascade) directive ([9d8e71e](https://github.com/binier/dgraphium/commit/9d8e71e735faaaa25bc03fc26eacfcb970a1e739)), closes [#7](https://github.com/binier/dgraphium/issues/7)
+* **core:** implement `[@ignore](https://github.com/ignore)Reflex` directive ([aa4e004](https://github.com/binier/dgraphium/commit/aa4e0042041cb9db6a7b8c6d6af7b3b4d533ebeb)), closes [#8](https://github.com/binier/dgraphium/issues/8)
+
+
+
+
+
 ## [0.1.1](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.1.0...@dgraphium/core@0.1.1) (2020-07-12)
 
 **Note:** Version bump only for package @dgraphium/core
