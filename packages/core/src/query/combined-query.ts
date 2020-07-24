@@ -34,7 +34,7 @@ export class CombinedQuery {
   }
 
   queryStrWithParams() {
-    const defineParamLine = this.params.length ? `query q(${
+    const defineParamLine = this._params.length ? `query q(${
       Param.paramsDefineStr(this._params)
     }) ` : '';
 
