@@ -56,8 +56,11 @@ export class QueryBuilder extends EdgeBuilder {
     return this;
   }
 
-  project(projection: EdgeBuilder | RawProjection<EdgeBuilder>) {
-    this.setEdges(projection);
+  project(
+    projection: EdgeBuilder | RawProjection<EdgeBuilder>,
+    overwrite = false
+  ) {
+    this.setEdges(projection, overwrite);
     return this;
   }
 

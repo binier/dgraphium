@@ -34,7 +34,7 @@ export interface EdgeBuilderConstructor {
 
 export class EdgeBuilder {
   protected type?: string;
-  protected edges: Projection<EdgeBuilder>;
+  protected edges: Projection<EdgeBuilder> = {};
   protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
 
@@ -54,13 +54,20 @@ export class EdgeBuilder {
     this.setEdges(edges);
   }
 
-  protected setEdges(edges: EdgeBuilder | RawProjection<EdgeBuilder>) {
+  protected setEdges(
+    edges: EdgeBuilder | RawProjection<EdgeBuilder>,
+    overwrite = false
+  ) {
     this.edges = Object.entries(edges)
-      .reduce((r, [k ,v]) => {
-        if (typeof v === 'object') r[k] = new EdgeBuilder(k, v);
-        else r[k] = v;
+      .reduce((r, [k, v]) => {
+        if (typeof v === 'object') {
+          if (r[k] instanceof EdgeBuilder)
+            (r[k] as EdgeBuilder).setEdges(v);
+          else
+            r[k] = new EdgeBuilder(k, v);
+        } else r[k] = v;
         return r;
-      }, {});
+      }, overwrite ? {} : this.edges);
   }
 
   withArgs(args: ArgsBuilder | Omit<ArgsBuilderData, 'func'>) {
