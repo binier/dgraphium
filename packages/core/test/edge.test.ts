@@ -88,6 +88,17 @@ describe('Edge test', () => {
     ).toMatch(/(name: name)/);
   });
 
+  it("shouldn't append prefix to nested elements if previous edge type is undefined", () => {
+    expect(
+      edge({
+        id: 1,
+        posts: {
+          text: 1,
+        },
+      }).toString()
+    ).toMatch(/(text: text)/);
+  });
+
   it('should return cloned Edge when we pass instanceof Edge as argument', () => {
     const original = edge('user', { id: 1 });
     const cloned = edge('user', original);
