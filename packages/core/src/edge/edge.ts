@@ -1,5 +1,5 @@
 import { Args } from '../args';
-import { indenter, Projection } from './common';
+import { indenter } from './common';
 import { Param } from '../param';
 import { Directive } from '../directive/directive';
 
@@ -7,16 +7,18 @@ interface ParamsExtractable {
   params(): Param[];
 }
 
+type Projection = { [alias: string]: string | Edge };
+
 export interface EdgeArgs {
-  edges: Projection<Edge>;
-  directives: Record<string, Directive>;
-  type?: string;
+  field: string;
+  edges: Projection;
   args?: Args;
+  directives: Record<string, Directive>;
 }
 
 export class Edge {
-  protected type?: string;
-  protected edges: Projection<Edge>;
+  protected field: string;
+  protected edges: Projection;
   protected _params: Param[];
   protected args: Args;
   protected directives: Record<string, Directive> = {};
@@ -37,33 +39,19 @@ export class Edge {
     return withParams.reduce((r, x) => [...r, ...x.params()], []);
   }
 
-  keyToField(key: string) {
-    if (['id', 'uid'].includes(key))
-      return 'uid';
-
-    if (this.type)
-      return `${this.type}.${key}`;
-    return key;
-  }
-
   toString(extraDepth = 0): string {
     const rootIndent = indenter(extraDepth);
     const indent = indenter(extraDepth + 1);
 
     const projectionLines = Object.entries(this.edges)
-      .filter(([_, val]) => !!val)
       .map(([key, val]) => {
-        if (typeof val === 'string')
-          return `${key}: ${val}`;
-
-        const field = this.keyToField(key);
-        const keyToFieldStr = `${key}: ${field}`;
-        if (['boolean', 'number'].includes(typeof val))
-          return keyToFieldStr;
-
-        return `${keyToFieldStr} ${val.toString(extraDepth + 1).trim()}`;
+        if (val instanceof Edge)
+          return `${key}: ${val.toString(extraDepth + 1).trim()}`;
+        return `${key}: ${val}`;
       })
       .map(x => indent(x));
+
+    const fieldStr = this.field;
 
     const argsStr = !this.args.length() ? ''
       : `(${this.args.toString()}) `;
@@ -72,7 +60,7 @@ export class Edge {
       .reduce((r, x) => r + x + ' ', '');
 
     return [
-      rootIndent(`${argsStr}${directivesStr}{`.trim()),
+      rootIndent(`${fieldStr} ${argsStr}${directivesStr}{`.trim()),
       ...projectionLines,
       rootIndent('}'),
     ].join('\n');

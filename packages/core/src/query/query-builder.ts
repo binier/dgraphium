@@ -67,7 +67,7 @@ export class QueryBuilder extends EdgeBuilder {
   buildQueryArgs(nameGen?: NameGenerators) {
     nameGen = Object.assign(defaultNameGen(), nameGen);
     return {
-      ...super.buildEdgeArgs(nameGen),
+      ...super.buildEdgeArgs('', nameGen),
       queryName: this.queryName || nameGen.query.next().value,
     };
   }

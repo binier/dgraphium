@@ -19,6 +19,7 @@ export interface NameGenerators {
 }
 
 export interface BuildEdgeArgs {
+  field: string;
   nameGen?: NameGenerators;
 }
 
@@ -149,7 +150,7 @@ export class EdgeBuilder {
     return key;
   }
 
-  protected buildEdgeArgs(nameGen?: NameGenerators) {
+  protected buildEdgeArgs(field: string, nameGen?: NameGenerators) {
     nameGen = Object.assign(defaultNameGen(), nameGen);
 
     const args = this.args.build(argMap => {
@@ -164,13 +165,18 @@ export class EdgeBuilder {
     });
 
     const edges = Object.entries(this.edges)
+      .filter(([_, v]) => !!v)
       .reduce((r, [k, v]) => {
-        if (v instanceof EdgeBuilder) r[k] = v.build({ nameGen });
+        const fieldFromKey = this.keyToField(k);
+        if (v instanceof EdgeBuilder)
+          r[k] = v.build({ nameGen, field: fieldFromKey });
+        else if (v === true || v === 1) r[k] = fieldFromKey;
         else r[k] = v;
         return r;
       }, {});
 
     return {
+      field,
       args,
       edges,
       directives: Object.entries(this.directives)
@@ -179,7 +185,6 @@ export class EdgeBuilder {
             !op ? op : this.buildOp(op, nameGen));
           return r;
         }, {}),
-      type: this.type,
     };
   }
 
@@ -187,7 +192,7 @@ export class EdgeBuilder {
     A extends BuildEdgeArgs
   >(args: Partial<A> = {}) {
     return new Edge(
-      this.buildEdgeArgs(args.nameGen)
+      this.buildEdgeArgs(args.field || '', args.nameGen)
     );
   }
 
