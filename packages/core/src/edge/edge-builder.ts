@@ -64,7 +64,7 @@ export class EdgeBuilder {
           if (r[k] instanceof EdgeBuilder)
             (r[k] as EdgeBuilder).setEdges(v);
           else
-            r[k] = new EdgeBuilder(k, v);
+            r[k] = new EdgeBuilder(this.type ? k : undefined, v);
         } else r[k] = v;
         return r;
       }, overwrite ? {} : this.edges);
