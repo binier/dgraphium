@@ -39,6 +39,7 @@ export class EdgeBuilder {
   protected edges: Projection<EdgeBuilder> = {};
   protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
+  protected _varName?: string;
 
   constructor(
     type?: string | EdgeBuilder | RawProjection<EdgeBuilder>,
@@ -86,6 +87,7 @@ export class EdgeBuilder {
   protected merge(edge: EdgeBuilder, overwrite = false) {
     this.setEdges(edge.edges, overwrite);
 
+    if (edge._varName) this._varName = edge._varName;
     if (edge._autoType !== undefined) this._autoType = edge._autoType;
     if (edge.type !== undefined) this.type = edge.type;
     Object.assign(this.directives, edge.directives);
@@ -173,6 +175,17 @@ export class EdgeBuilder {
     return this;
   }
 
+  /** @internal */
+  get varName() {
+    return this._varName;
+  }
+
+  /** @internal */
+  asVar(varName: string) {
+    this._varName = varName;
+    return this;
+  }
+
   keyToField(key: string) {
     if (['id', 'uid'].includes(key))
       return 'uid';
@@ -211,6 +224,7 @@ export class EdgeBuilder {
       field,
       args,
       edges,
+      varName: this._varName,
       directives: Object.entries(this.directives)
         .reduce((r, [k, v]) => {
           r[k] = v.build(op =>

@@ -13,6 +13,7 @@ export interface EdgeArgs {
   field: string;
   edges: Projection;
   args?: Args;
+  varName?: string;
   directives: Record<string, Directive>;
 }
 
@@ -21,11 +22,15 @@ export class Edge {
   protected edges: Projection;
   protected _params: Param[];
   protected args: Args;
+  protected varName?: string;
   protected directives: Record<string, Directive> = {};
 
   constructor(args: EdgeArgs) {
-    Object.assign(this, args);
-    this.args = this.args || new Args();
+    this.field = args.field;
+    this.edges = args.edges;
+    this.varName = args.varName;
+    this.directives = args.directives;
+    this.args = args.args || new Args();
     this._params = this.params();
   }
 
@@ -37,6 +42,16 @@ export class Edge {
     ];
 
     return withParams.reduce((r, x) => [...r, ...x.params()], []);
+  }
+
+  protected fieldStr() {
+    if (this.varName)
+      return `${this.varName} as ${this.field} `;
+    return this.field + ' ';
+  }
+
+  protected argsStr() {
+    return !this.args.length() ? '' : `(${this.args.toString()}) `;
   }
 
   toString(extraDepth = 0): string {
@@ -51,16 +66,14 @@ export class Edge {
       })
       .map(x => indent(x));
 
-    const fieldStr = this.field;
-
-    const argsStr = !this.args.length() ? ''
-      : `(${this.args.toString()}) `;
+    const fieldStr = this.fieldStr();
+    const argsStr = this.argsStr();
 
     const directivesStr = Object.values(this.directives)
       .reduce((r, x) => r + x + ' ', '');
 
     return [
-      rootIndent(`${fieldStr} ${argsStr}${directivesStr}{`.trim()),
+      rootIndent(`${fieldStr}${argsStr}${directivesStr}{`.trim()),
       ...projectionLines,
       rootIndent('}'),
     ].join('\n');

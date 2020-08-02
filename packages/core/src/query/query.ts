@@ -1,4 +1,4 @@
-import { Edge, EdgeArgs, indenter } from '../edge';
+import { Edge, EdgeArgs } from '../edge';
 import { Param } from '../param';
 
 export interface QueryArgs extends EdgeArgs {
@@ -6,25 +6,25 @@ export interface QueryArgs extends EdgeArgs {
 }
 
 export class Query extends Edge {
-  queryName: string;
-
   constructor(args: QueryArgs) {
     super(args);
-    this.queryName = args.queryName;
+    this.field = args.queryName;
   }
 
-  projectionStr(extraDepth?: number) {
-    return super.toString(extraDepth);
+  get queryName() {
+    return this.field;
+  }
+
+  protected fieldStr() {
+    return super.fieldStr().trim();
+  }
+
+  protected argsStr() {
+    return !this.args.length() ? '() ' : super.argsStr();
   }
 
   queryStr(extraDepth = 0) {
-    const indent = indenter(extraDepth);
-
-    return indent(
-      this.queryName
-      + (!this.args.length() ? '() ' : '')
-      + this.projectionStr(extraDepth).trim()
-    );
+    return super.toString(extraDepth);
   }
 
   queryStrWithParams() {
