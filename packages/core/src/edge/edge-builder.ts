@@ -35,6 +35,7 @@ export interface EdgeBuilderConstructor {
 
 export class EdgeBuilder {
   protected type?: string;
+  protected _autoType?: boolean
   protected edges: Projection<EdgeBuilder> = {};
   protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
@@ -49,8 +50,12 @@ export class EdgeBuilder {
       this.type = capitalize(type);
     }
 
-    if (edges instanceof EdgeBuilder)
-      return clone(edges);
+    if (edges instanceof EdgeBuilder) {
+      const edge = clone(edges);
+      if (edges.autoType) edge.type = this.type;
+
+      return edge;
+    }
 
     this.setEdges(edges);
   }
@@ -59,6 +64,9 @@ export class EdgeBuilder {
     edges: EdgeBuilder | RawProjection<EdgeBuilder>,
     overwrite = false
   ) {
+    if (edges instanceof EdgeBuilder)
+      return this.setEdges(edges.edges, overwrite);
+
     this.edges = Object.entries(edges)
       .reduce((r, [k, v]) => {
         if (typeof v === 'object') {
@@ -69,6 +77,16 @@ export class EdgeBuilder {
         } else r[k] = v;
         return r;
       }, overwrite ? {} : this.edges);
+  }
+
+
+  get autoType() {
+    return this._autoType;
+  }
+
+  setAutoType(flag = true) {
+    this._autoType = flag;
+    return this;
   }
 
   withArgs(args: ArgsBuilder | Omit<ArgsBuilderData, 'func'>) {
