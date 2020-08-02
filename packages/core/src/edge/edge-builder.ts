@@ -11,6 +11,7 @@ import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
 import { capitalize, RawProjection, Projection } from './common';
 import { DirectiveBuilder } from '../directive';
+import { Ref } from '../ref';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
@@ -193,6 +194,17 @@ export class EdgeBuilder {
     if (this.type)
       return `${this.type}.${key}`;
     return key;
+  }
+
+  /** @internal */
+  refs(): Ref[] {
+    return Object.values(this.edges)
+      .filter(x => x instanceof EdgeBuilder)
+      .reduce((r, x: EdgeBuilder) => r.concat(x.refs()), [])
+      .concat(this.args.refs())
+      .concat(Object.values(this.directives)
+        .reduce((r, x) => r.concat(x.refs()),
+      []));
   }
 
   protected buildEdgeArgs(field: string, nameGen?: NameGenerators) {

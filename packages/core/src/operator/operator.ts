@@ -1,8 +1,9 @@
 import { Param } from '../param';
 import { Uid } from '../uid';
+import { Ref } from '../ref';
 
 export type Subject = string;
-export type OpValue = Param | Uid | RegExp | Date
+export type OpValue = Param | Ref | Uid | RegExp | Date
   | string | number | boolean;
 export type OpArg = Param | string | number | boolean;
 
