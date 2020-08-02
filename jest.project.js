@@ -20,7 +20,6 @@ module.exports = ({ dirname }) => {
     transform: { '^.+\\.tsx?$': 'ts-jest' },
     moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: `${ROOT_DIR}/` }),
     modulePathIgnorePatterns: ['dist'],
-    collectCoverage: true,
     restoreMocks: true,
   };
 };
