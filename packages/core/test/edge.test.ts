@@ -99,6 +99,28 @@ describe('Edge test', () => {
     ).toMatch(/(text: text)/);
   });
 
+  it('should not prefix nested `EdgeBuilder` if it has no `autoType`', () => {
+    expect(
+      edge('user', {
+        id: 1,
+        biography: edge({
+          text: 1,
+        }),
+      }).toString()
+    ).not.toMatch(/(text: Biography.text)/);
+  });
+
+  it('should prefix nested `EdgeBuilder` if it has `autoType` and parent has a type', () => {
+    expect(
+      edge('user', {
+        id: 1,
+        biography: edge({
+          text: 1,
+        }).setAutoType(),
+      }).toString()
+    ).toMatch(/(text: Biography.text)/);
+  });
+
   it('should return cloned Edge when we pass instanceof Edge as argument', () => {
     const original = edge('user', { id: 1 });
     const cloned = edge('user', original);
