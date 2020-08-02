@@ -9,6 +9,7 @@ import { ArgsBuilderData } from '../args';
 import { numberSeqGenerator } from '../utils';
 import { Query } from './query';
 import { DirectiveBuilder } from '../directive';
+import { Ref } from '../ref';
 
 export type QueryNameGen = Generator<string, string>;
 
@@ -62,6 +63,10 @@ export class QueryBuilder extends EdgeBuilder {
   ) {
     this.setEdges(projection, overwrite);
     return this;
+  }
+
+  ref(...path: string[]) {
+    return new Ref(this, path);
   }
 
   buildQueryArgs(nameGen?: NameGenerators) {
