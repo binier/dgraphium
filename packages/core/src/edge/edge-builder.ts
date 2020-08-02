@@ -69,16 +69,30 @@ export class EdgeBuilder {
 
     this.edges = Object.entries(edges)
       .reduce((r, [k, v]) => {
-        if (typeof v === 'object') {
-          if (r[k] instanceof EdgeBuilder)
+        if (typeof v !== 'object') {
+          r[k] = v;
+          return r;
+        }
+        if (!(r[k] instanceof EdgeBuilder))
+          r[k] = new EdgeBuilder(this.type ? k : undefined, v);
+        else if (!(v instanceof EdgeBuilder))
             (r[k] as EdgeBuilder).setEdges(v);
           else
-            r[k] = new EdgeBuilder(this.type ? k : undefined, v);
-        } else r[k] = v;
+          (r[k] as EdgeBuilder).merge(v, overwrite);
         return r;
       }, overwrite ? {} : this.edges);
   }
 
+  protected merge(edge: EdgeBuilder, overwrite = false) {
+    this.setEdges(edge.edges, overwrite);
+
+    if (edge._autoType !== undefined) this._autoType = edge._autoType;
+    if (edge.type !== undefined) this.type = edge.type;
+    Object.assign(this.directives, edge.directives);
+    Object.assign(this.args.all, edge.args.all);
+
+    return this;
+  }
 
   get autoType() {
     return this._autoType;

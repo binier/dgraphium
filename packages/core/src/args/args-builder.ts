@@ -12,6 +12,10 @@ export class ArgsBuilder {
     private args: ArgsBuilderData = {}
   ) { }
 
+  get all() {
+    return this.args;
+  }
+
   setArg<K extends keyof ArgsBuilderData>(key: K, val: ArgsBuilderData[K]) {
     this.args[key] = val;
   }
