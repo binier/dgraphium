@@ -6,12 +6,14 @@ import {
   defaultNameGen as edgeDefaultNameGen,
 } from '../edge';
 import { ArgsBuilderData } from '../args';
-import { numberSeqGenerator } from '../utils';
+import { buildNameGen, BuildNameGen } from '../utils';
 import { Query } from './query';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 
-export type QueryNameGen = Generator<string, string>;
+export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
+export type QueryNameGen = ReturnType<BuildQueryNameGen>;
+export const queryNameGen: BuildQueryNameGen = buildNameGen.bind(null, 'q');
 
 export interface NameGenerators extends EdgeNameGenerators {
   query?: QueryNameGen;
@@ -25,13 +27,6 @@ export const defaultNameGen = (): NameGenerators => ({
   ...edgeDefaultNameGen(),
   query: queryNameGen(),
 });
-
-export function* queryNameGen(startI = 0): QueryNameGen {
-  const numGen = numberSeqGenerator(startI);
-  while (true) {
-    yield 'q' + numGen.next().value;
-  }
-}
 
 export class QueryBuilder extends EdgeBuilder {
   protected queryName?: string;
@@ -73,7 +68,7 @@ export class QueryBuilder extends EdgeBuilder {
     nameGen = Object.assign(defaultNameGen(), nameGen);
     return {
       ...super.buildEdgeArgs('', nameGen),
-      queryName: this.queryName || nameGen.query.next().value,
+      queryName: this.queryName || nameGen.query.next(),
     };
   }
 
