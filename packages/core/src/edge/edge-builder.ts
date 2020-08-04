@@ -85,7 +85,7 @@ export class EdgeBuilder {
 
     if (edge._varName) this._varName = edge._varName;
     if (edge._autoType !== undefined) this._autoType = edge._autoType;
-    if (edge.type !== undefined && !edge.autoType) this.type = edge.type;
+    if (!edge.autoType) this.type = edge.type;
     Object.assign(this.directives, edge.directives);
     Object.assign(this.args.all, edge.args.all);
 
