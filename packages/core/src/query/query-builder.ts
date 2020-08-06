@@ -12,6 +12,7 @@ import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { CombinedQuery } from './combined-query';
 import { CombinedQueryBuilder } from './combined-query-builder';
+import { FieldBuilder } from '../field';
 
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
 export type QueryNameGen = ReturnType<BuildQueryNameGen>;
@@ -53,7 +54,7 @@ export class QueryBuilder extends EdgeBuilder {
   }
 
   project(
-    projection: EdgeBuilder | RawProjection<EdgeBuilder>,
+    projection: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
     overwrite = false
   ) {
     this.setEdges(projection, overwrite);
