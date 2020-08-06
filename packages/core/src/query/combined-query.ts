@@ -2,9 +2,20 @@ import { Query } from './query';
 import { Param } from '../param';
 
 export class CombinedQuery {
+  static extractParams(queries: Readonly<(string | Query)[]>) {
+    return Array.from(
+      queries.reduce((r, query) => {
+        if (query instanceof Query)
+          query.params().forEach(x => r.add(x));
+        return r;
+      }, new Set<Param>())
+    );
+  }
+
   constructor(
     public readonly queries: Readonly<(string | Query)[]>,
     private readonly _params: Readonly<Param[]>
+      = CombinedQuery.extractParams(queries)
   ) { }
 
   params(): Readonly<Param[]> {
@@ -25,7 +36,7 @@ export class CombinedQuery {
     return  `${defineParamLine}{\n${this.queryStr(1)}\n}`;
   }
 
-  toString() {
+  toString(_ignore?: never) {
     return this.queryStrWithParams();
   }
 }

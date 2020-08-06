@@ -11,6 +11,7 @@ import { Edge } from './edge';
 import { capitalize, RawProjection, Projection } from './common';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
+import { Runnable } from '../types';
 import { FieldBuilder, BuildFieldArgs } from '../field';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
@@ -89,7 +90,7 @@ export class EdgeBuilder extends FieldBuilder {
 
         if (existing instanceof EdgeBuilder)
           r[k] = existing.merge(v, overwrite);
-          else
+        else
           r[k] = v.merge(existing.merge(v));
 
         return r;
@@ -156,6 +157,8 @@ export class EdgeBuilder extends FieldBuilder {
       return value.map(x => this.buildOpValue(x, nameGen) as OpValue);
     if (value instanceof ParamBuilder)
       return this.buildParam(value, nameGen.param);
+    if (value instanceof Ref)
+      return value.clone();
     return value;
   }
 
@@ -211,6 +214,23 @@ export class EdgeBuilder extends FieldBuilder {
       []));
   }
 
+  /** @internal */
+  defineVar(path: Readonly<string[]>, name: string) {
+    const [key, ...pathTail] = path;
+    if (path.length === 0) return this.asVar(name);
+    if (path.length === 1) {
+      return this.setEdges({
+        [key]: new FieldBuilder(undefined).asVar(name),
+      });
+    }
+
+    return this.setEdges({
+      [key]: new EdgeBuilder()
+        .setAutoType()
+        .defineVar(pathTail, name),
+    });
+  }
+
   protected buildEdgeArgs(name: string, nameGen?: NameGenerators) {
     nameGen = Object.assign(defaultNameGen(), nameGen);
 
@@ -253,7 +273,7 @@ export class EdgeBuilder extends FieldBuilder {
 
   build<
     A extends BuildEdgeArgs
-  >(args: Partial<A> = {}) {
+  >(args: Partial<A> = {}): Edge | Runnable {
     return new Edge(
       this.buildEdgeArgs(args.name || this._name || '', args.nameGen)
     );

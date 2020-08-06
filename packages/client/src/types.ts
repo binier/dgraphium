@@ -10,5 +10,5 @@ export interface Param {
 
 export interface Query {
   toString(): string;
-  params(): Param[];
+  params(): Readonly<Param[]>;
 }

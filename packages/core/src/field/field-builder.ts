@@ -1,4 +1,5 @@
 import { Field } from './field';
+import { Runnable } from '../types';
 
 export interface BuildFieldArgs {
   name?: string;
@@ -31,7 +32,7 @@ export class FieldBuilder {
 
   build<
     A extends BuildFieldArgs
-  >(args: Partial<A> = {}): Field {
+  >(args: Partial<A> = {}): Field | Runnable {
     return new Field({
       name: this._name || args.name,
       varName: this.varName,

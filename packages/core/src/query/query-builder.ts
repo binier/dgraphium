@@ -10,6 +10,8 @@ import { buildNameGen, BuildNameGen } from '../utils';
 import { Query } from './query';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
+import { CombinedQuery } from './combined-query';
+import { CombinedQueryBuilder } from './combined-query-builder';
 
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
 export type QueryNameGen = ReturnType<BuildQueryNameGen>;
@@ -67,11 +69,14 @@ export class QueryBuilder extends EdgeBuilder {
     return super.buildEdgeArgs(this._name || nameGen.query.next(), nameGen);
   }
 
-  build<
-    A extends BuildQueryArgs
-  >(args: Partial<A> = {}) {
+  /** @internal */
+  buildQuery(args: Partial<BuildQueryArgs> = {}) {
     return new Query(
       this.buildQueryArgs(args.nameGen)
     );
+  }
+
+  build(): CombinedQuery {
+    return new CombinedQueryBuilder([this]).build();
   }
 }
