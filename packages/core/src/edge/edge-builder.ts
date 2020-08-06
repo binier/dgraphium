@@ -11,6 +11,7 @@ import { Edge } from './edge';
 import { capitalize, RawProjection, Projection } from './common';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
+import { FieldBuilder, BuildFieldArgs } from '../field';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
 
@@ -18,8 +19,7 @@ export interface NameGenerators {
   param: ParamNameGen;
 }
 
-export interface BuildEdgeArgs {
-  field: string;
+export interface BuildEdgeArgs extends BuildFieldArgs {
   nameGen?: NameGenerators;
 }
 
@@ -29,22 +29,22 @@ export const defaultNameGen = (): NameGenerators => ({
 
 /** should match EdgeBuilder's constructor */
 export interface EdgeBuilderConstructor {
-  (edges: EdgeBuilder | RawProjection<EdgeBuilder>): EdgeBuilder;
-  (type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder>): EdgeBuilder;
+  (edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
+  (type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
 }
 
-export class EdgeBuilder {
+export class EdgeBuilder extends FieldBuilder {
   protected type?: string;
   protected _autoType?: boolean
-  protected edges: Projection<EdgeBuilder> = {};
+  protected edges: Projection<EdgeBuilder | FieldBuilder> = {};
   protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
-  protected _varName?: string;
 
   constructor(
-    type?: string | EdgeBuilder | RawProjection<EdgeBuilder>,
-    edges?: EdgeBuilder | RawProjection<EdgeBuilder>
+    type?: string | EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
+    edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>
   ) {
+    super('');
     if (type) {
       if (typeof type !== 'string')
         return new EdgeBuilder(undefined, type);
@@ -58,7 +58,7 @@ export class EdgeBuilder {
   }
 
   protected setEdges(
-    edges: EdgeBuilder | RawProjection<EdgeBuilder>,
+    edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
     overwrite = false
   ) {
     if (edges instanceof EdgeBuilder)
@@ -66,24 +66,44 @@ export class EdgeBuilder {
 
     this.edges = Object.entries(edges)
       .reduce((r, [k, v]) => {
+        const existing = r[k];
+        if (v === 1 || v === true) {
+          if (existing) return r;
+          v = new FieldBuilder(undefined);
+        }
         if (typeof v !== 'object') {
+          r[k] = v || false;
+          return r;
+        }
+
+        // clone value
+        if ((v instanceof FieldBuilder) && !(v instanceof EdgeBuilder))
+          v = new FieldBuilder(undefined).merge(v);
+        else
+          v = new EdgeBuilder(this.type ? k : undefined, v);
+
+        if (!existing || typeof existing === 'string') {
           r[k] = v;
           return r;
         }
-        if (!(r[k] instanceof EdgeBuilder))
-          r[k] = new EdgeBuilder(this.type ? k : undefined, v);
-        else if (!(v instanceof EdgeBuilder))
-            (r[k] as EdgeBuilder).setEdges(v);
+
+        if (existing instanceof EdgeBuilder)
+          r[k] = existing.merge(v, overwrite);
           else
-          (r[k] as EdgeBuilder).merge(v, overwrite);
+          r[k] = v.merge(existing.merge(v));
+
         return r;
       }, overwrite ? {} : this.edges);
   }
 
-  protected merge(edge: EdgeBuilder, overwrite = false) {
+  merge(edge: EdgeBuilder | FieldBuilder, overwrite = false) {
+    if (edge instanceof FieldBuilder)
+      super.merge(edge);
+    if (!(edge instanceof EdgeBuilder))
+      return this;
+
     this.setEdges(edge.edges, overwrite);
 
-    if (edge._varName) this._varName = edge._varName;
     if (edge._autoType !== undefined) this._autoType = edge._autoType;
     if (!edge.autoType) this.type = edge.type;
     Object.assign(this.directives, edge.directives);
@@ -171,17 +191,6 @@ export class EdgeBuilder {
     return this;
   }
 
-  /** @internal */
-  get varName() {
-    return this._varName;
-  }
-
-  /** @internal */
-  asVar(varName: string) {
-    this._varName = varName;
-    return this;
-  }
-
   keyToField(key: string) {
     if (['id', 'uid'].includes(key))
       return 'uid';
@@ -202,7 +211,7 @@ export class EdgeBuilder {
       []));
   }
 
-  protected buildEdgeArgs(field: string, nameGen?: NameGenerators) {
+  protected buildEdgeArgs(name: string, nameGen?: NameGenerators) {
     nameGen = Object.assign(defaultNameGen(), nameGen);
 
     const args = this.args.build(argMap => {
@@ -221,14 +230,15 @@ export class EdgeBuilder {
       .reduce((r, [k, v]) => {
         const fieldFromKey = this.keyToField(k);
         if (v instanceof EdgeBuilder)
-          r[k] = v.build({ nameGen, field: fieldFromKey });
-        else if (v === true || v === 1) r[k] = fieldFromKey;
+          r[k] = v.build({ nameGen, name: fieldFromKey });
+        else if (v instanceof FieldBuilder)
+          r[k] = v.build({ name: fieldFromKey });
         else r[k] = v;
         return r;
       }, {});
 
     return {
-      field,
+      name,
       args,
       edges,
       varName: this._varName,
@@ -245,7 +255,7 @@ export class EdgeBuilder {
     A extends BuildEdgeArgs
   >(args: Partial<A> = {}) {
     return new Edge(
-      this.buildEdgeArgs(args.field || '', args.nameGen)
+      this.buildEdgeArgs(args.name || this._name || '', args.nameGen)
     );
   }
 

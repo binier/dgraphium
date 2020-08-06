@@ -1,12 +1,18 @@
 import { EdgeBuilder, EdgeBuilderConstructor } from './edge';
 import { QueryBuilder, CombinedQueryBuilder } from './query';
+import { FieldBuilder } from './field';
 
 export * from './uid';
+export * from './field';
 export * from './edge';
 export * as operator from './operator';
 export * as operators from './operators';
 export * as param from './param/param';
 export * as params from './params';
+
+export const field = (
+  ...args: ConstructorParameters<typeof FieldBuilder>
+) => new FieldBuilder(...args);
 
 export const edge: EdgeBuilderConstructor =
   (...args: any[]) => new EdgeBuilder(...args);

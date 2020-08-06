@@ -40,13 +40,11 @@ describe('Query test', () => {
         },
       });
 
-    expect(edgesToObject(q)).toMatchObject({
-      a: 0,
-      b: {
-        c: 0,
-        d: 1,
-      },
-    });
+    const edges = edgesToObject(q);
+
+    expect(edges.a).toEqual(false);
+    expect(edges.b.c).toEqual(false);
+    expect(edges.b.d).toBeTruthy();
   });
 
   it('query.project should overwrite projections if flag is true', () => {
@@ -64,7 +62,7 @@ describe('Query test', () => {
 
     const edges = edgesToObject(q);
 
-    expect(edges.a).toEqual(0);
+    expect(edges.a).toEqual(false);
     expect(edges.b).toEqual(undefined)
   });
 });

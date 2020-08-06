@@ -29,16 +29,14 @@ export const defaultNameGen = (): NameGenerators => ({
 });
 
 export class QueryBuilder extends EdgeBuilder {
-  protected queryName?: string;
-
-  constructor(type?: string, queryName?: string) {
+  constructor(type?: string, name?: string) {
     super(type, {});
-    this.queryName = queryName;
+    this._name = name;
   }
 
   /** set query name */
   name(name: string) {
-    this.queryName = name;
+    this._name = name;
     return this;
   }
 
@@ -66,10 +64,7 @@ export class QueryBuilder extends EdgeBuilder {
 
   buildQueryArgs(nameGen?: NameGenerators) {
     nameGen = Object.assign(defaultNameGen(), nameGen);
-    return {
-      ...super.buildEdgeArgs('', nameGen),
-      queryName: this.queryName || nameGen.query.next(),
-    };
+    return super.buildEdgeArgs(this._name || nameGen.query.next(), nameGen);
   }
 
   build<

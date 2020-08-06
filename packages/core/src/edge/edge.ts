@@ -2,6 +2,7 @@ import { Args } from '../args';
 import { indenter } from './common';
 import { Param } from '../param';
 import { Directive } from '../directive/directive';
+import { FieldArgs, Field } from '../field';
 
 interface ParamsExtractable {
   params(): Param[];
@@ -9,26 +10,21 @@ interface ParamsExtractable {
 
 type Projection = { [alias: string]: string | Edge };
 
-export interface EdgeArgs {
-  field: string;
+export interface EdgeArgs extends FieldArgs {
   edges: Projection;
   args?: Args;
-  varName?: string;
   directives: Record<string, Directive>;
 }
 
-export class Edge {
-  protected field: string;
+export class Edge extends Field {
   protected edges: Projection;
   protected _params: Param[];
   protected args: Args;
-  protected varName?: string;
   protected directives: Record<string, Directive> = {};
 
   constructor(args: EdgeArgs) {
-    this.field = args.field;
+    super(args);
     this.edges = args.edges;
-    this.varName = args.varName;
     this.directives = args.directives;
     this.args = args.args || new Args();
     this._params = this.params();
@@ -45,9 +41,7 @@ export class Edge {
   }
 
   protected fieldStr() {
-    if (this.varName)
-      return `${this.varName} as ${this.field} `;
-    return this.field + ' ';
+    return super.toString() + ' ';
   }
 
   protected argsStr() {
