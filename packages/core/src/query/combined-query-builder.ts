@@ -32,8 +32,8 @@ export class CombinedQueryBuilder {
 
     return Array.from(refsMap.entries())
       .map(([query, refs]) => {
-        query = Object.assign(new QueryBuilder(), query)
-          .project(query, true)
+        query = new QueryBuilder()
+          .merge(query)
           .name('var');
 
         refs.forEach(ref => {
