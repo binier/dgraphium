@@ -39,8 +39,7 @@ export class QueryBuilder extends EdgeBuilder {
 
   /** set query name */
   name(name: string) {
-    this._name = name;
-    return this;
+    return super.name(name);
   }
 
   func(func: ArgsBuilderData['func']) {

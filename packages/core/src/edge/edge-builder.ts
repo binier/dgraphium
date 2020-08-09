@@ -107,9 +107,16 @@ export class EdgeBuilder extends FieldBuilder {
 
     if (edge._autoType !== undefined) this._autoType = edge._autoType;
     if (!edge.autoType) this.type = edge.type;
+    if (edge._name) this._name = edge._name;
     Object.assign(this.directives, edge.directives);
     Object.assign(this.args.all, edge.args.all);
 
+    return this;
+  }
+
+  /** set field name */
+  name(name: string) {
+    this._name = name;
     return this;
   }
 
@@ -275,7 +282,7 @@ export class EdgeBuilder extends FieldBuilder {
     A extends BuildEdgeArgs
   >(args: Partial<A> = {}): Edge | Runnable {
     return new Edge(
-      this.buildEdgeArgs(args.name || this._name || '', args.nameGen)
+      this.buildEdgeArgs(this._name || args.name || '', args.nameGen)
     );
   }
 
