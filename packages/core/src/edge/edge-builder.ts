@@ -72,7 +72,7 @@ export class EdgeBuilder extends FieldBuilder {
           if (existing) return r;
           v = new FieldBuilder(undefined);
         }
-        if (typeof v !== 'object') {
+        if (typeof v !== 'object' || v instanceof Ref) {
           r[k] = v || false;
           return r;
         }
@@ -83,7 +83,7 @@ export class EdgeBuilder extends FieldBuilder {
         else
           v = new EdgeBuilder(this.type ? k : undefined, v);
 
-        if (!existing || typeof existing === 'string') {
+        if (!existing || typeof existing === 'string' || existing instanceof Ref) {
           r[k] = v;
           return r;
         }
@@ -213,8 +213,14 @@ export class EdgeBuilder extends FieldBuilder {
   /** @internal */
   refs(): Ref[] {
     return Object.values(this.edges)
-      .filter(x => x instanceof EdgeBuilder)
-      .reduce((r, x: EdgeBuilder) => r.concat(x.refs()), [])
+      .map(x => {
+        if (x instanceof EdgeBuilder)
+          return x.refs();
+        if (x instanceof Ref)
+          return [x];
+        return [];
+      })
+      .reduce((r, x) => r.concat(x), [])
       .concat(this.args.refs())
       .concat(Object.values(this.directives)
         .reduce((r, x) => r.concat(x.refs()),
@@ -260,6 +266,8 @@ export class EdgeBuilder extends FieldBuilder {
           r[k] = v.build({ nameGen, name: fieldFromKey });
         else if (v instanceof FieldBuilder)
           r[k] = v.build({ name: fieldFromKey });
+        else if (v instanceof Ref)
+          r[k] = v.clone();
         else r[k] = v;
         return r;
       }, {});

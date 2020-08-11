@@ -1,14 +1,15 @@
 import { Args } from '../args';
-import { indenter } from './common';
+import { indenter, Projection as GenericProjection } from './common';
 import { Param } from '../param';
 import { Directive } from '../directive/directive';
 import { FieldArgs, Field } from '../field';
+import { Ref } from '../ref';
 
 interface ParamsExtractable {
   params(): Param[];
 }
 
-type Projection = { [alias: string]: string | Edge };
+type Projection = GenericProjection<Edge>;
 
 export interface EdgeArgs extends FieldArgs {
   edges: Projection;
@@ -55,9 +56,12 @@ export class Edge extends Field {
     const projectionLines = Object.entries(this.edges)
       .map(([key, val]) => {
         if (val instanceof Edge)
-          return `${key}: ${val.toString(extraDepth + 1).trim()}`;
-        return `${key}: ${val}`;
+          return [key, val.toString(extraDepth + 1).trim()];
+        if (val instanceof Ref)
+          return [key, `val(${val})`];
+        return [key, val];
       })
+      .map(([key, val]) => `${key}: ${val}`)
       .map(x => indent(x));
 
     const fieldStr = this.fieldStr();
