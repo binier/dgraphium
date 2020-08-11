@@ -90,7 +90,6 @@ describe('Operator test - Param value', () => {
       match('name', params.string('zur'), params.int(3))
     ).build();
     const myParams = myEdge.params();
-    console.log(myParams);
     expect(myEdge.toString()).toMatch(/match\(name, \$p1, \$p2\)/);
     expect(myParams[0].getValue()).toEqual('zur');
     expect(myParams[1].getValue()).toEqual('3');
