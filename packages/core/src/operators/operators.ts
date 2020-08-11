@@ -1,6 +1,7 @@
 import { OperatorBuilder, OpBuilderValue, Subject } from '../operator';
 import { UidLike, Uid } from '../uid';
 import { ParamBuilder } from '../param';
+import { RefAble, isRefAble } from '../ref';
 
 type UidArg<T extends 'uid' | 'uid[]'> = UidLike | ParamBuilder<T>;
 
@@ -14,10 +15,16 @@ export const type = (type: string) =>
 export const has = (subject: Subject) =>
   new OperatorBuilder({ name: 'has', subject });
 
-export const uid = (...uids: UidArg<'uid' | 'uid[]'>[]) =>
+export const uid = (...uids: (UidArg<'uid' | 'uid[]'> | RefAble)[]) =>
   new OperatorBuilder({
     name: 'uid',
-    value: uids.map(x => x instanceof ParamBuilder ? x : new Uid(x)),
+    value: uids.map(x => {
+      if (x instanceof ParamBuilder)
+        return x;
+      if (isRefAble(x))
+        return x.ref();
+      return new Uid(x);
+    }),
   });
 
 /**

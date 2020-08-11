@@ -1,8 +1,7 @@
 import { ObjectOrValue } from '../ts-helpers';
 
-export type ProjectionScalars = string | boolean | 0 | 1;
-export type RawProjection<T> = ObjectOrValue<ProjectionScalars | T>;
-export type Projection<T> = { [name: string]: ProjectionScalars | T };
+export type RawProjection<T> = ObjectOrValue<string | boolean | 0 | 1 | T>;
+export type Projection<T> = { [name: string]: string | false | T };
 
 export function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);

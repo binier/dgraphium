@@ -16,3 +16,13 @@ export function* numberSeqGenerator(i = 0) {
     yield ++i;
   }
 }
+
+export interface NameGen {
+  next(): string;
+}
+export type BuildNameGen<Brand = unknown> = (startI?: number) => NameGen & Brand;
+
+export function buildNameGen(prefix: string, startI = 0): NameGen {
+  const numGen = numberSeqGenerator(startI);
+  return { next: () => prefix + numGen.next().value };
+}

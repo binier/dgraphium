@@ -6,11 +6,18 @@ import {
   defaultNameGen as edgeDefaultNameGen,
 } from '../edge';
 import { ArgsBuilderData } from '../args';
-import { numberSeqGenerator } from '../utils';
+import { buildNameGen, BuildNameGen } from '../utils';
 import { Query } from './query';
 import { DirectiveBuilder } from '../directive';
+import { Ref } from '../ref';
+import { CombinedQuery } from './combined-query';
+import { CombinedQueryBuilder } from './combined-query-builder';
+import { FieldBuilder } from '../field';
 
-export type QueryNameGen = Generator<string, string>;
+type QueryProjection = EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>;
+export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
+export type QueryNameGen = ReturnType<BuildQueryNameGen>;
+export const queryNameGen: BuildQueryNameGen = buildNameGen.bind(null, 'q');
 
 export interface NameGenerators extends EdgeNameGenerators {
   query?: QueryNameGen;
@@ -25,25 +32,15 @@ export const defaultNameGen = (): NameGenerators => ({
   query: queryNameGen(),
 });
 
-export function* queryNameGen(startI = 0): QueryNameGen {
-  const numGen = numberSeqGenerator(startI);
-  while (true) {
-    yield 'q' + numGen.next().value;
-  }
-}
-
 export class QueryBuilder extends EdgeBuilder {
-  protected queryName?: string;
-
-  constructor(type?: string, queryName?: string) {
+  constructor(type?: string, name?: string) {
     super(type, {});
-    this.queryName = queryName;
+    this._name = name;
   }
 
   /** set query name */
   name(name: string) {
-    this.queryName = name;
-    return this;
+    return super.name(name);
   }
 
   func(func: ArgsBuilderData['func']) {
@@ -57,26 +54,32 @@ export class QueryBuilder extends EdgeBuilder {
   }
 
   project(
-    projection: EdgeBuilder | RawProjection<EdgeBuilder>,
+    projection: QueryProjection | ((self: QueryBuilder) => QueryProjection),
     overwrite = false
   ) {
+    if (typeof projection === 'function')
+      return this.project(projection(this), overwrite);
     this.setEdges(projection, overwrite);
     return this;
   }
 
-  buildQueryArgs(nameGen?: NameGenerators) {
-    nameGen = Object.assign(defaultNameGen(), nameGen);
-    return {
-      ...super.buildEdgeArgs('', nameGen),
-      queryName: this.queryName || nameGen.query.next().value,
-    };
+  ref(...path: string[]) {
+    return new Ref(this, path);
   }
 
-  build<
-    A extends BuildQueryArgs
-  >(args: Partial<A> = {}) {
+  buildQueryArgs(nameGen?: NameGenerators) {
+    nameGen = Object.assign(defaultNameGen(), nameGen);
+    return super.buildEdgeArgs(this._name || nameGen.query.next(), nameGen);
+  }
+
+  /** @internal */
+  buildQuery(args: Partial<BuildQueryArgs> = {}) {
     return new Query(
       this.buildQueryArgs(args.nameGen)
     );
+  }
+
+  build(): CombinedQuery {
+    return new CombinedQueryBuilder([this]).build();
   }
 }

@@ -4,7 +4,7 @@ import {
   ParamTypeValue,
   ParamMap,
 } from './param';
-import { numberSeqGenerator } from '../utils';
+import { buildNameGen } from '../utils';
 
 export type ParamBuilderMap = { [name: string]: ParamBuilder };
 export interface ParamNameGen {
@@ -19,18 +19,17 @@ function parseParamName(name: string) {
 
 export function paramNameGen(startI = 0): ParamNameGen {
   const paramMap = new Map<ParamBuilder, string>();
-  const numGen = numberSeqGenerator(startI);
-  const genName = () => 'p' + numGen.next().value;
+  const nameGen = buildNameGen('p', startI);
 
   return {
     next(builder?: ParamBuilder) {
       if (builder) {
         const name =
-          builder.getName() || paramMap.get(builder) || genName();
+          builder.getName() || paramMap.get(builder) || nameGen.next();
         paramMap.set(builder, name);
         return name;
       }
-      return genName();
+      return nameGen.next();
     },
   };
 }

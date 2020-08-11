@@ -2,6 +2,7 @@ import { Args } from '../args';
 import { indenter } from './common';
 import { Param } from '../param';
 import { Directive } from '../directive/directive';
+import { FieldArgs, Field } from '../field';
 
 interface ParamsExtractable {
   params(): Param[];
@@ -9,23 +10,23 @@ interface ParamsExtractable {
 
 type Projection = { [alias: string]: string | Edge };
 
-export interface EdgeArgs {
-  field: string;
+export interface EdgeArgs extends FieldArgs {
   edges: Projection;
   args?: Args;
   directives: Record<string, Directive>;
 }
 
-export class Edge {
-  protected field: string;
+export class Edge extends Field {
   protected edges: Projection;
   protected _params: Param[];
   protected args: Args;
   protected directives: Record<string, Directive> = {};
 
   constructor(args: EdgeArgs) {
-    Object.assign(this, args);
-    this.args = this.args || new Args();
+    super(args);
+    this.edges = args.edges;
+    this.directives = args.directives;
+    this.args = args.args || new Args();
     this._params = this.params();
   }
 
@@ -37,6 +38,14 @@ export class Edge {
     ];
 
     return withParams.reduce((r, x) => [...r, ...x.params()], []);
+  }
+
+  protected fieldStr() {
+    return super.toString() + ' ';
+  }
+
+  protected argsStr() {
+    return !this.args.length() ? '' : `(${this.args.toString()}) `;
   }
 
   toString(extraDepth = 0): string {
@@ -51,16 +60,14 @@ export class Edge {
       })
       .map(x => indent(x));
 
-    const fieldStr = this.field;
-
-    const argsStr = !this.args.length() ? ''
-      : `(${this.args.toString()}) `;
+    const fieldStr = this.fieldStr();
+    const argsStr = this.argsStr();
 
     const directivesStr = Object.values(this.directives)
       .reduce((r, x) => r + x + ' ', '');
 
     return [
-      rootIndent(`${fieldStr} ${argsStr}${directivesStr}{`.trim()),
+      rootIndent(`${fieldStr}${argsStr}${directivesStr}{`.trim()),
       ...projectionLines,
       rootIndent('}'),
     ].join('\n');
