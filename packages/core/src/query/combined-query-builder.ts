@@ -30,19 +30,24 @@ export class CombinedQueryBuilder {
     const vNameGen = varNameGen();
     const refsMap = this.queryToRefMap();
 
-    return Array.from(refsMap.entries())
+    const queries = this.queries.slice();
+    const refQueries = Array.from(refsMap.entries())
       .map(([query, refs]) => {
-        query = new QueryBuilder()
-          .merge(query)
-          .name('var');
+        const existingI = queries.findIndex(x => x === query);
+        query = new QueryBuilder().merge(query);
 
         refs.forEach(ref => {
           ref.name = vNameGen.next(ref);
           query.defineVar(ref.path, ref.name);
         });
 
-        return query;
-      });
+        if (existingI < 0) return query.name('var');
+        queries[existingI] = query;
+        return undefined;
+      })
+      .filter(x => x) as (string | QueryBuilder)[];
+
+    return refQueries.concat(queries);
   }
 
   build() {
@@ -51,9 +56,7 @@ export class CombinedQueryBuilder {
       query: queryNameGen(),
     };
 
-    const refQueries = this.defineRefs();
-    const queries: (Query | string)[] = (refQueries as (QueryBuilder | string)[])
-      .concat(this.queries)
+    const queries: (Query | string)[] = this.defineRefs()
       .map(query => {
         if (typeof query === 'string') return query;
         return query.buildQuery({ nameGen });
