@@ -61,4 +61,17 @@ describe('Ref test', () => {
     expect(qStr).toMatch(/posts2: posts @filter\(uid\(v1\)\)/);
     expect(qStr).toMatch(/q1\(func: uid\(0xe\)\)/);
   });
+
+  it('return value variable as a value', () => {
+    const q = query()
+      .func(uid('0xe'))
+      .project(q => ({
+        likeCount: 1,
+        likeCountVal: q.ref('likeCount'),
+      }));
+    const qStr = q.build().toString();
+
+    expect(qStr).toMatch(/likeCount: v1 as likeCount/);
+    expect(qStr).toMatch(/likeCountVal: val\(v1\)/);
+  });
 });
