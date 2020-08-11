@@ -42,4 +42,23 @@ describe('Ref test', () => {
     expect(qStr).toMatch(/q1\(func: uid\(v2\)\)/);
     expect(qStr).toMatch(/posts @filter\(uid\(v1\)\)/);
   });
+
+  it('same query uid', () => {
+    const q1 = query('user')
+      .func(uid('0xe'))
+      .project(q => ({
+        posts1: edge({ id: 1 })
+          .name('posts')
+          .filter(uid('0x2', '0x3')),
+        posts2: edge({ id: 1 })
+          .name('posts')
+          .filter(uid(q.ref('posts1'))),
+      }));
+
+    const qStr = q1.build().toString();
+
+    expect(qStr).toMatch(/posts1: v1 as posts @filter\(uid\(0x2, 0x3\)\)/);
+    expect(qStr).toMatch(/posts2: posts @filter\(uid\(v1\)\)/);
+    expect(qStr).toMatch(/q1\(func: uid\(0xe\)\)/);
+  });
 });
