@@ -14,6 +14,7 @@ import { CombinedQuery } from './combined-query';
 import { CombinedQueryBuilder } from './combined-query-builder';
 import { FieldBuilder } from '../field';
 
+type QueryProjection = EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>;
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
 export type QueryNameGen = ReturnType<BuildQueryNameGen>;
 export const queryNameGen: BuildQueryNameGen = buildNameGen.bind(null, 'q');
@@ -53,9 +54,11 @@ export class QueryBuilder extends EdgeBuilder {
   }
 
   project(
-    projection: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
+    projection: QueryProjection | ((self: QueryBuilder) => QueryProjection),
     overwrite = false
   ) {
+    if (typeof projection === 'function')
+      return this.project(projection(this), overwrite);
     this.setEdges(projection, overwrite);
     return this;
   }
