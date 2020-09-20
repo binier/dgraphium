@@ -7,6 +7,7 @@ Query builder for Dgraph database.
   - [Install](#install)
   - [Demo](#demo)
   - [Operators](#operators)
+  - [Connecting Operators](#connecting-operators)
 
 
 ## Install
@@ -58,6 +59,15 @@ Supported operators:
 | `allOfText`  | full-text search with stemming and stop words to find strings matching **all** of the given text |
 | `anyOfTerms` | matches strings that have **any** of the specified terms in any order; **case insensitive**.     |
 | `allOfTerms` | matches strings that have **all** of the specified terms in any order; **case insensitive**.     |
+
+## Connecting Operators
+
+**Note:** connecting operators (`LogicalOperators`) **can't** be used in `query.func(...)`.
+
+they can be imported by:
+```typescript
+import { and, or, not } from '@dgraphium/core/operators';
+```
 
 ## Demo
 
