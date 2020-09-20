@@ -6,6 +6,7 @@ Query builder for Dgraph database.
 
   - [Install](#install)
   - [Demo](#demo)
+  - [Operators](#operators)
 
 
 ## Install
@@ -21,6 +22,42 @@ or yarn:
 ```sh
 yarn add @dgraphium/core
 ```
+
+## Operators
+
+Operators/Functions can be imported from `@dgraphium/core/operators`.
+
+Supported operators:
+
+#### basic operators
+
+| operator  | description                                   |
+|-----------|-----------------------------------------------|
+| `type`    | search by **Type**                            |
+| `has`     | find nodes which **has** field/edge/predicate |
+| `uid`     | find by **uid**                               |
+| `predUid` | find by nested edge's **uid**                 |
+
+#### simple comparison operators
+
+| operator | description              |
+|----------|--------------------------|
+| `eq`     | equals                   |
+| `lt`     | less than                |
+| `lte`    | less than or equal to    |
+| `gt`     | greater than             |
+| `gte`    | greater than or equal to |
+
+#### text operators
+
+| operator     | description                                                                                      |
+|--------------|--------------------------------------------------------------------------------------------------|
+| `regex`      | regex search                                                                                     |
+| `match`      | fuzzy matching                                                                                   |
+| `anyOfText`  | full-text search with stemming and stop words to find strings matching **any** of the given text |
+| `allOfText`  | full-text search with stemming and stop words to find strings matching **all** of the given text |
+| `anyOfTerms` | matches strings that have **any** of the specified terms in any order; **case insensitive**.     |
+| `allOfTerms` | matches strings that have **all** of the specified terms in any order; **case insensitive**.     |
 
 ## Demo
 
