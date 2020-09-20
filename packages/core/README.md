@@ -7,6 +7,7 @@ Query builder for Dgraph database.
   - [Install](#install)
   - [Demo](#demo)
   - [Projection](#projection)
+    - [Projection Merging](#projection-merging)
   - [Operators](#operators)
   - [Connecting Operators](#connecting-operators)
 
@@ -48,6 +49,38 @@ Each key's value type in the projection object can be:
     the output will be: `${key}: ${value}`
   - `Edge`: nested edge.
   - `Ref`: query/value reference.
+
+#### Projection Merging
+
+You can call `query.project(...)` multiple times on same query object.
+
+By default projections will deeply merge. New keys will be added,
+existing keys will be overwritten.
+
+For example:
+```typescript
+query.project({ a: 1, c: { d: 1 } });
+query.project({ b: 1, c: { d: 0, k: 1 } });
+/* resulting projection: {
+  a: 1,
+  b: 1 ,
+  c: { d: 0, k: 1 }
+} */
+```
+
+You can do projection merging on `Edge` as well using:
+`edge.merge({...})`.
+
+---
+
+To **overwrite** projection, you can set `overwrite` to `true`:
+```typescript
+query.project({ a: 1 });
+query.project({ b: 1 }, true);
+// resulting projection: { b: 1 }
+```
+
+In case of `Edge`: `edge.merge({...}, true)`
 
 ## Operators
 
