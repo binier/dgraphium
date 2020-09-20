@@ -130,10 +130,10 @@ export class EdgeBuilder extends FieldBuilder {
   }
 
   withArgs(args: ArgsBuilder | Omit<ArgsBuilderData, 'func'>) {
-    if (args instanceof ArgsBuilder)
-      this.args = args;
-    else
-      this.args = new ArgsBuilder(args);
+    this.args.setArg('first', args.first);
+    this.args.setArg('offset', args.offset);
+    this.args.setArg('after', args.after);
+
     return this;
   }
 
