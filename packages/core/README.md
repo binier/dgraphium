@@ -2,6 +2,25 @@
 
 Query builder for Dgraph database.
 
+## Table of contents
+
+  - [Install](#install)
+
+
+## Install
+
+Install using npm:
+
+```sh
+npm install @dgraphium/core
+```
+
+or yarn:
+
+```sh
+yarn add @dgraphium/core
+```
+
 ## Demo
 
 ```typescript
