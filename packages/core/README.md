@@ -10,6 +10,7 @@ Query builder for Dgraph database.
     - [Projection Merging](#projection-merging)
   - [Operators](#operators)
   - [Connecting Operators](#connecting-operators)
+  - [Filtering](#filtering)
 
 
 ## Install
@@ -127,6 +128,23 @@ they can be imported by:
 import { and, or, not } from '@dgraphium/core/operators';
 ```
 
+## Filtering
+
+Operators can be used in filtering queries or nested edges.
+
+- **filtering queries**:
+
+  For example fetch users with age between **18** and **30**:
+  `query().filter(and(gt('age', 18), lt('age', 30)))`
+
+- **filtering nested edges**:
+  For example fetch user's posts, which has more than 10 likes:
+  ```typescript
+  query().projection({
+    posts: edge().filter(gt('likes', 10)),
+  });
+  ```
+
 ## Demo
 
 ```typescript
@@ -232,14 +250,14 @@ await dgraphClient.newTxn().query(meQuery); // params will be included
 ```
 
 > **Note:** you can name parameters by: `params.[paramType](...).name(paramName)`.
-> For example: `params.string('strValue').name('myParamName')`. 
+> For example: `params.string('strValue').name('myParamName')`.
 > This is useful when you want to reuse query and override parameters:
 >
-> for example: 
+> for example:
 > ```typescript
 > await dgraphClient.newTxn().queryWithVars(
 >   queryWithParam,
->   { '$myParam': 'newStringValue' } 
+>   { '$myParam': 'newStringValue' }
 > );
 > ```
 
