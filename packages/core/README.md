@@ -11,6 +11,7 @@ Query builder for Dgraph database.
   - [Operators](#operators)
   - [Connecting Operators](#connecting-operators)
   - [Filtering](#filtering)
+  - [Pagination](#pagination)
 
 
 ## Install
@@ -144,6 +145,23 @@ Operators can be used in filtering queries or nested edges.
     posts: edge().filter(gt('likes', 10)),
   });
   ```
+
+## Pagination
+
+All pagination methods are available for queries as well as nested edges.
+
+- `.first(first: number)`: count of nodes to fetch (same as limit).
+- `.offset(offset: number)`: node offset or amount of nodes to skip.
+- `.after(id: Uid)`: fetch nodes after the `id`.
+
+you can also use 
+```typescript
+.withArgs(args: {
+  first: number,
+  offset: number,
+  after: Uid,
+})
+```
 
 ## Demo
 
