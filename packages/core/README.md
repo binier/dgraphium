@@ -6,6 +6,7 @@ Query builder for Dgraph database.
 
   - [Install](#install)
   - [Demo](#demo)
+  - [Projection](#projection)
   - [Operators](#operators)
   - [Connecting Operators](#connecting-operators)
 
@@ -23,6 +24,30 @@ or yarn:
 ```sh
 yarn add @dgraphium/core
 ```
+
+## Projection
+
+Projection is basically an edge definition. Separately it can be
+defined by: `edge({...})` which is exported from `@dgraphium/core`.
+
+To define projection for a query:
+```typescript
+  query(...).project({ /* projection here */ })
+```
+
+For describing an edge, object is used. Object almost looks like the
+returned value.
+
+Each key's value type in the projection object can be:
+  - `1 | true`: include field in a result.
+    - if you pass `type` to containing edge/projection, `key` maps to
+      field: `${capitalized type}.${key}`
+    - if `type` is undefined, key maps to field with same name: `${key}`
+  - `0 | false`: don't include field in a result.
+  - `string`: key will map to passed value. Key simply maps to it so
+    the output will be: `${key}: ${value}`
+  - `Edge`: nested edge.
+  - `Ref`: query/value reference.
 
 ## Operators
 
