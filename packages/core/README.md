@@ -5,6 +5,7 @@ Query builder for Dgraph database.
 ## Table of contents
 
   - [Install](#install)
+  - [Demo](#demo)
 
 
 ## Install
