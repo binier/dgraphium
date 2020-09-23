@@ -56,7 +56,7 @@ export class QueryBuilder extends EdgeBuilder {
   project(
     projection: QueryProjection | ((self: QueryBuilder) => QueryProjection),
     overwrite = false
-  ) {
+  ): this {
     if (typeof projection === 'function')
       return this.project(projection(this), overwrite);
     this.setEdges(projection, overwrite);

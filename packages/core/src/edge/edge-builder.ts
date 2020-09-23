@@ -61,7 +61,7 @@ export class EdgeBuilder extends FieldBuilder {
   protected setEdges(
     edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
     overwrite = false
-  ) {
+  ): this {
     if (edges instanceof EdgeBuilder)
       return this.setEdges(edges.edges, overwrite);
 
@@ -95,6 +95,8 @@ export class EdgeBuilder extends FieldBuilder {
 
         return r;
       }, overwrite ? {} : this.edges);
+
+    return this;
   }
 
   merge(edge: EdgeBuilder | FieldBuilder, overwrite = false) {
