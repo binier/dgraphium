@@ -13,6 +13,7 @@ Query builder for Dgraph database.
   - [Pagination](#pagination)
   - [GraphQL Types](#graphql-types)
   - [Demo](#demo)
+  - [Running a Query](#running-a-query)
 
 
 ## Install
@@ -257,6 +258,26 @@ const combinedQuery = combine(
   - don't call `build` method on query before passing to `combine` function.
   - query names should be unique.
 
+## Running a Query
+
+You can run query or [group of queries](#combine-queries) with
+[@dgraphium/client](../client):
+```typescript
+await dgraphClient.newTxn().query(meQuery); // params will be included
+```
+
+> **Note:** you can name parameters by: `param.name(paramName)`.
+> For example: `params.string('myStrValue').name('myParamName')`.
+> This is useful when you want to reuse query and override parameters:
+>
+> for example:
+> ```typescript
+> await dgraphClient.newTxn().queryWithVars(
+>   queryWithParam,
+>   { '$myParamName': 'myStrValueNew' }
+> );
+> ```
+
 ## Demo
 
 ```typescript
@@ -360,15 +381,3 @@ run query with [@dgraphium/client](../client):
 ```typescript
 await dgraphClient.newTxn().query(meQuery); // params will be included
 ```
-
-> **Note:** you can name parameters by: `params.[paramType](...).name(paramName)`.
-> For example: `params.string('strValue').name('myParamName')`.
-> This is useful when you want to reuse query and override parameters:
->
-> for example:
-> ```typescript
-> await dgraphClient.newTxn().queryWithVars(
->   queryWithParam,
->   { '$myParam': 'newStringValue' }
-> );
-> ```
