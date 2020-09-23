@@ -5,13 +5,14 @@ Query builder for Dgraph database.
 ## Table of contents
 
   - [Install](#install)
-  - [Demo](#demo)
   - [Projection](#projection)
     - [Projection Merging](#projection-merging)
   - [Operators](#operators)
   - [Connecting Operators](#connecting-operators)
   - [Filtering](#filtering)
   - [Pagination](#pagination)
+  - [GraphQL Types](#graphql-types)
+  - [Demo](#demo)
 
 
 ## Install
@@ -163,6 +164,82 @@ you can also use
 })
 ```
 
+## GraphQL Types
+
+If you have [GraphQL schema](https://graphql.dgraph.io/schema),
+when you deploy that schema to Dgraph database, each field gets
+prefixed by it's type.
+
+for example:
+
+```graphql
+type User {
+    id: ID!
+    name: String!
+    age: Int!
+    posts: [Post]
+}
+
+type Post {
+  id: ID!
+  text: String!
+  replyCount: Int
+}
+```
+
+results in following Dgraph schema:
+
+```graphql
+type User {
+  User.name
+  User.age
+  User.posts
+}
+
+type Post {
+  Post.text
+  Post.replyCount
+}
+
+User.name: string
+User.age: int
+User.posts: [uid]
+```
+
+so to query such data, you need to prefix each field with it's type:
+```graphql
+{
+  me(func: uid(0x2)) {
+    id: uid
+    name: User.name
+    age: User.age
+    posts: User.posts @filter(gt(Post.replyCount, 2)) {
+      id: uid
+      text: Post.text
+      replyCount: Post.replyCount
+    }
+  }
+}
+```
+
+to achieve exactly above written query with **Dgraphium**:
+```typescript
+query('user') // <- type User
+  .name('me')
+  .func(uid('0x2'))
+  .project({
+    id: 1,
+    name: 1,
+    age: 1,
+    posts: edge('post', { // <- type Post
+        id: 1,
+        text: 1,
+        replyCount: 1,
+      })
+      .filter(gt('replyCount', 2)),
+  })
+```
+
 ## Demo
 
 ```typescript
@@ -278,81 +355,6 @@ await dgraphClient.newTxn().query(meQuery); // params will be included
 >   { '$myParam': 'newStringValue' }
 > );
 > ```
-
-### GraphQL types
-if you have [GraphQL schema](https://graphql.dgraph.io/schema),
-when you deploy that schema to Dgraph database, each field gets prefixed
-by it's type.
-
-for example:
-
-```graphql
-type User {
-    id: ID!
-    name: String!
-    age: Int!
-    posts: [Post]
-}
-
-type Post {
-  id: ID!
-  text: String!
-  replyCount: Int
-}
-```
-
-results in following Dgraph schema:
-
-```graphql
-type User {
-  User.name
-  User.age
-  User.posts
-}
-
-type Post {
-  Post.text
-  Post.replyCount
-}
-
-User.name: string
-User.age: int
-User.posts: [uid]
-```
-
-so to query such data, you need to prefix each field with it's type:
-```graphql
-{
-  me(func: uid(0x2)) {
-    id: uid
-    name: User.name
-    age: User.age
-    posts: User.posts @filter(gt(Post.replyCount, 2)) {
-      id: uid
-      text: Post.text
-      replyCount: Post.replyCount
-    }
-  }
-}
-```
-
-to achieve exactly above written query with **Dgraphium**:
-```typescript
-query('user') // <- type User
-  .name('me')
-  .func(uid('0x2'))
-  .project({
-    id: 1,
-    name: 1,
-    age: 1,
-    posts: edge('post', { // <- type Post
-        id: 1,
-        text: 1,
-        replyCount: 1,
-      })
-      .filter(gt('replyCount', 2)),
-  })
-```
 
 ### Combine queries
 
