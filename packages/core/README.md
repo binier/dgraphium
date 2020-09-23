@@ -11,6 +11,7 @@ Query builder for Dgraph database.
   - [Connecting Operators](#connecting-operators)
   - [Filtering](#filtering)
   - [Pagination](#pagination)
+  - [Directives](#directives)
   - [GraphQL Types](#graphql-types)
   - [Running a Query](#running-a-query)
   - [Demo](#demo)
@@ -164,6 +165,17 @@ you can also use
   after: Uid,
 })
 ```
+
+## Directives
+
+Query and Edge directives:
+- **cascade**
+
+Query only directives:
+- **ignoreReflex**
+
+Those directives are available on edge or query as a function, e.g.
+`edge.cascase()`.
 
 ## GraphQL Types
 
