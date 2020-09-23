@@ -62,7 +62,20 @@ describe('Ref test', () => {
     expect(qStr).toMatch(/q1\(func: uid\(0xe\)\)/);
   });
 
-  it('return value variable as a value', () => {
+  it('return value variable from another query as a value', () => {
+    const q1 = query();
+    const q = query()
+      .project({
+        refValue: q1.ref('rootField', 'nestedField'),
+      });
+
+    const qStr = q.toString();
+
+    expect(qStr).toMatch(/rootField {\n.*nestedField: v1 as nestedField/);
+    expect(qStr).toMatch(/refValue: val\(v1\)/);
+  });
+
+  it('return value variable from same query as a value', () => {
     const q = query()
       .func(uid('0xe'))
       .project(q => ({
