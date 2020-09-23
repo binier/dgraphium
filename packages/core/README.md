@@ -12,8 +12,8 @@ Query builder for Dgraph database.
   - [Filtering](#filtering)
   - [Pagination](#pagination)
   - [GraphQL Types](#graphql-types)
-  - [Demo](#demo)
   - [Running a Query](#running-a-query)
+  - [Demo](#demo)
 
 
 ## Install
