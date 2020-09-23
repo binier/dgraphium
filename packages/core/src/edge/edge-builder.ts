@@ -55,7 +55,7 @@ export class EdgeBuilder extends FieldBuilder {
     if (edges instanceof EdgeBuilder)
       return this.merge(edges, true);
 
-    this.setEdges(edges);
+    if (edges) this.setEdges(edges);
   }
 
   protected setEdges(
