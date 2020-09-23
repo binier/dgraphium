@@ -240,6 +240,23 @@ query('user') // <- type User
   })
 ```
 
+## Combine Queries
+
+you can combine queries with:
+```typescript
+import { combine } from '@dgraphium/core';
+
+const combinedQuery = combine(
+  query1,
+  query2,
+  ...
+);
+```
+
+**Note**:
+  - don't call `build` method on query before passing to `combine` function.
+  - query names should be unique.
+
 ## Demo
 
 ```typescript
@@ -355,20 +372,3 @@ await dgraphClient.newTxn().query(meQuery); // params will be included
 >   { '$myParam': 'newStringValue' }
 > );
 > ```
-
-### Combine queries
-
-you can combine queries with:
-```typescript
-import { combine } from '@dgraphium/core';
-
-const combinedQuery = combine(
-  query1,
-  query2,
-  ...
-);
-```
-
-**Note**:
-  - don't call `build` method on query before passing to `combine` function.
-  - query names should be unique.
