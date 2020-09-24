@@ -30,8 +30,8 @@ export const defaultNameGen = (): NameGenerators => ({
 
 /** should match EdgeBuilder's constructor */
 export interface EdgeBuilderConstructor {
-  (edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
-  (type: string, edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
+  (edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
+  (type: string, edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
 }
 
 export class EdgeBuilder extends FieldBuilder {
