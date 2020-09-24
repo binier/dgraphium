@@ -12,6 +12,7 @@ Query builder for Dgraph database.
   - [Filtering](#filtering)
   - [Pagination](#pagination)
   - [Directives](#directives)
+  - [Query Variables (refs)](#query-variables-refs)
   - [GraphQL Types](#graphql-types)
   - [Running a Query](#running-a-query)
   - [Demo](#demo)
@@ -176,6 +177,96 @@ Query only directives:
 
 Those directives are available on edge or query as a function, e.g.
 `edge.cascase()`.
+
+## Query Variables (refs)
+
+Query variable (ref) can be created by calling `ref(...path: string[])`
+method on query object. `path` argument is a path to a field.
+
+**Note:** unlike DQL, you can define as many refs as you want. Unless you
+use it somewhere, it will not be defined in the resulting query.
+
+Query refs can be used either in projection (in which case field will
+point to `val(varName)`), or in func/filtering.
+
+#### Path does not exist in query projection
+
+New field will be added to varQuery projection and ref will point to it.
+
+##### Examples
+```typescript
+const varQuery = query().func(gt('age', 10));
+const postsQuery = query()
+  .func(uid(varQuery.ref('posts')))
+  .project({ text: 1 });
+```
+`postsQuery.toString()` outputs:
+```graphql
+{
+    var(func: gt(age, 10)) {
+      posts: v1 as posts
+    }
+
+    q1(func: uid(v1)) {
+      text: text
+    }
+}
+```
+
+#### Path exists in query projection
+
+Ref will point to whatever is at the given path.
+
+##### Examples
+- pointed field with filtering:
+```typescript
+const varQuery = query()
+  .func(gt('age', 10))
+  .project({
+    posts: edge().filter(regex('text', /mysql/))
+  });
+const postsQuery = query()
+  .func(uid(varQuery.ref('posts')))
+  .project({ text: 1 });
+```
+`postsQuery.toString()` outputs:
+```graphql
+{
+    var(func: gt(age, 10)) {
+      posts: v1 as posts @filter(regexp(text, /mysql/)) {
+      }
+    }
+
+    q1(func: uid(v1)) {
+      text: text
+    }
+}
+```
+
+- graphql type field:
+```typescript
+const varQuery = query('user')
+  .func(gt('age', 10))
+  .project({
+    posts: edge('post').filter(regex('text', /mysql/)),
+  });
+const postsQuery = query('post')
+  .func(uid(varQuery.ref('posts')))
+  .project({ text: 1 });
+```
+`postsQuery.toString()` outputs:
+```graphql
+{
+    var(func: gt(User.age, 10)) {
+      posts: v1 as User.posts @filter(regexp(Post.text, /mysql/)) {
+      }
+    }
+
+    q1(func: uid(v1)) {
+      text: Post.text
+    }
+}
+```
 
 ## GraphQL Types
 
