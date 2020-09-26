@@ -4,12 +4,13 @@ import { Param } from '../param';
 import { Directive } from '../directive/directive';
 import { FieldArgs, Field } from '../field';
 import { Ref } from '../ref';
+import { Aggregation } from '../aggregation';
 
 interface ParamsExtractable {
   params(): Param[];
 }
 
-type Projection = GenericProjection<Edge>;
+type Projection = GenericProjection<Edge | Aggregation>;
 
 export interface EdgeArgs extends FieldArgs {
   edges: Projection;
@@ -59,6 +60,8 @@ export class Edge extends Field {
           return [key, val.toString(extraDepth + 1).trim()];
         if (val instanceof Ref)
           return [key, `val(${val})`];
+        if (val instanceof Aggregation)
+          return [key, val.toString()];
         return [key, val];
       })
       .map(([key, val]) => `${key}: ${val}`)

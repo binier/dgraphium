@@ -8,13 +8,24 @@ import {
 } from '../operator';
 import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
-import { capitalize, RawProjection, Projection } from './common';
+import {
+  capitalize,
+  RawProjection as GenericRawProjection,
+  Projection as GenericProjection,
+} from './common';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { Runnable } from '../types';
 import { FieldBuilder, BuildFieldArgs } from '../field';
+import { AggregationBuilder } from '../aggregation';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
+type RawProjection = GenericRawProjection<
+  EdgeBuilder | FieldBuilder | AggregationBuilder
+>;
+type Projection = GenericProjection<
+  EdgeBuilder | FieldBuilder | AggregationBuilder
+>;
 
 export interface NameGenerators {
   param: ParamNameGen;
@@ -30,20 +41,20 @@ export const defaultNameGen = (): NameGenerators => ({
 
 /** should match EdgeBuilder's constructor */
 export interface EdgeBuilderConstructor {
-  (edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
-  (type: string, edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>): EdgeBuilder;
+  (edges?: EdgeBuilder | RawProjection): EdgeBuilder;
+  (type: string, edges?: EdgeBuilder | RawProjection): EdgeBuilder;
 }
 
 export class EdgeBuilder extends FieldBuilder {
   protected type?: string;
   protected _autoType?: boolean
-  protected edges: Projection<EdgeBuilder | FieldBuilder> = {};
+  protected edges: Projection = {};
   protected directives: Record<string, DirectiveBuilder> = {};
   protected args: ArgsBuilder = new ArgsBuilder();
 
   constructor(
-    type?: string | EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
-    edges?: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>
+    type?: string | EdgeBuilder | RawProjection,
+    edges?: EdgeBuilder | RawProjection
   ) {
     super('');
     if (type) {
@@ -59,7 +70,7 @@ export class EdgeBuilder extends FieldBuilder {
   }
 
   protected setEdges(
-    edges: EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>,
+    edges: EdgeBuilder | RawProjection,
     overwrite = false
   ): this {
     if (edges instanceof EdgeBuilder)
@@ -72,7 +83,11 @@ export class EdgeBuilder extends FieldBuilder {
           if (existing) return r;
           v = new FieldBuilder(undefined);
         }
-        if (typeof v !== 'object' || v instanceof Ref) {
+        if (
+          typeof v !== 'object'
+          || v instanceof Ref
+          || v instanceof AggregationBuilder
+        ) {
           r[k] = v || false;
           return r;
         }
@@ -83,7 +98,12 @@ export class EdgeBuilder extends FieldBuilder {
         else
           v = new EdgeBuilder(this.type ? k : undefined, v);
 
-        if (!existing || typeof existing === 'string' || existing instanceof Ref) {
+        if (
+          !existing
+          || typeof existing === 'string'
+          || existing instanceof Ref
+          || existing instanceof AggregationBuilder
+        ) {
           r[k] = v;
           return r;
         }
@@ -216,8 +236,8 @@ export class EdgeBuilder extends FieldBuilder {
   refs(): Ref[] {
     return Object.values(this.edges)
       .map(x => {
-        if (x instanceof EdgeBuilder)
-          return x.refs();
+        if (x && x['refs'] instanceof Function)
+          return x['refs']();
         if (x instanceof Ref)
           return [x];
         return [];
@@ -270,6 +290,8 @@ export class EdgeBuilder extends FieldBuilder {
           r[k] = v.build({ name: fieldFromKey });
         else if (v instanceof Ref)
           r[k] = v.clone();
+        else if (v instanceof AggregationBuilder)
+          r[k] = v.build();
         else r[k] = v;
         return r;
       }, {});

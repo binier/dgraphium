@@ -7,8 +7,10 @@ export * from './field';
 export * from './edge';
 export * as operator from './operator';
 export * as operators from './operators';
-export * as param from './param/param';
+export * as param from './param';
 export * as params from './params';
+export * as aggregation from './aggregation';
+export * as aggregations from './aggregations';
 
 export const field = (
   ...args: ConstructorParameters<typeof FieldBuilder>
