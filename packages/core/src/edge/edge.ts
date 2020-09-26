@@ -1,5 +1,5 @@
 import { Args } from '../args';
-import { indenter, Projection as GenericProjection } from './common';
+import { indenter, GenericProjection } from './common';
 import { Param } from '../param';
 import { Directive } from '../directive/directive';
 import { FieldArgs, Field } from '../field';
@@ -10,7 +10,7 @@ interface ParamsExtractable {
   params(): Param[];
 }
 
-type Projection = GenericProjection<Edge | Aggregation>;
+export type Projection = GenericProjection<Edge | Aggregation>;
 
 export interface EdgeArgs extends FieldArgs {
   edges: Projection;

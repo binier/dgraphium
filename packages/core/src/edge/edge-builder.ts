@@ -10,8 +10,8 @@ import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
 import { Edge } from './edge';
 import {
   capitalize,
-  RawProjection as GenericRawProjection,
-  Projection as GenericProjection,
+  GenericRawProjection,
+  GenericProjection,
 } from './common';
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
@@ -20,10 +20,10 @@ import { FieldBuilder, BuildFieldArgs } from '../field';
 import { AggregationBuilder } from '../aggregation';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
-type RawProjection = GenericRawProjection<
+export type RawProjection = GenericRawProjection<
   EdgeBuilder | FieldBuilder | AggregationBuilder
 >;
-type Projection = GenericProjection<
+export type Projection = GenericProjection<
   EdgeBuilder | FieldBuilder | AggregationBuilder
 >;
 

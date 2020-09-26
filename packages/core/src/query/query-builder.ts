@@ -1,7 +1,7 @@
 import {
   EdgeBuilder,
-  RawProjection,
   BuildEdgeArgs,
+  BuilderRawProjection as RawProjection,
   NameGenerators as EdgeNameGenerators,
   defaultNameGen as edgeDefaultNameGen,
 } from '../edge';
@@ -12,9 +12,8 @@ import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { CombinedQuery } from './combined-query';
 import { CombinedQueryBuilder } from './combined-query-builder';
-import { FieldBuilder } from '../field';
 
-type QueryProjection = EdgeBuilder | RawProjection<EdgeBuilder | FieldBuilder>;
+type QueryProjection = EdgeBuilder | RawProjection;
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
 export type QueryNameGen = ReturnType<BuildQueryNameGen>;
 export const queryNameGen: BuildQueryNameGen = buildNameGen.bind(null, 'q');
