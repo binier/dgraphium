@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/binier/dgraphium/compare/@dgraphium/client@0.1.2...@dgraphium/client@0.2.0) (2020-09-26)
+
+
+### Features
+
+* **core:** implement building `Query` when it contains `Ref` ([48c2a5e](https://github.com/binier/dgraphium/commit/48c2a5e49dd44072533da8f6ab368d814df7833f))
+
+
+
+
+
 ## [0.1.2](https://github.com/binier/dgraphium/compare/@dgraphium/client@0.1.1...@dgraphium/client@0.1.2) (2020-07-24)
 
 **Note:** Version bump only for package @dgraphium/client

@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.2.0...@dgraphium/core@0.3.0) (2020-09-26)
+
+
+### Bug Fixes
+
+* **core:** `query.project(...)` not accepting `Field` primitive ([e55cea8](https://github.com/binier/dgraphium/commit/e55cea8b46b174ead3b60aa8cb9385a04846af8c))
+* **core:** `QueryBuilder.withArgs(...)` overrides `func` ([dc29d35](https://github.com/binier/dgraphium/commit/dc29d35be84916023b7aec9a1389421675b1197e))
+* **core:** regression for test: "should not prefix nested `EdgeBuilder` if it has no `autoType`" ([d9a2022](https://github.com/binier/dgraphium/commit/d9a2022dfeaa413bad8d0fb9e887e0a1a87ff5ef))
+* **core:** setEdges and project not returning this ([027042d](https://github.com/binier/dgraphium/commit/027042debb3b9a20bed37e9ec583caaddd991f00))
+* **core:** shouldn't prefix nested elements if previous edge type is undefined ([42c12ad](https://github.com/binier/dgraphium/commit/42c12ad17ab2e5ecce5cca3f0005ea98c3d2bad4))
+* **core/edge-builder:** constructor crashes if edges is undefined/null ([b818968](https://github.com/binier/dgraphium/commit/b8189689f71afeb4e378cdeb5d68366b046f0879))
+* **core/edge-builder:** constructor signature - make edges optional ([c3b8d78](https://github.com/binier/dgraphium/commit/c3b8d78a93b6f8de2c027637f1e851be59201410))
+
+
+### Features
+
+* **core:** add `EdgeBuilder` merging logic ([1bf1680](https://github.com/binier/dgraphium/commit/1bf1680ac4b3883f767ed02e97b05d568bb87254))
+* **core:** add a way to reference self in projection ([2e831a7](https://github.com/binier/dgraphium/commit/2e831a778b51295a71d0285471ec21a413d81fee))
+* **core:** add auto type option. ([de0e0f6](https://github.com/binier/dgraphium/commit/de0e0f625c5c6b6e573b1c8ea2fee12a4ba0b46f))
+* **core:** add projection merging tests ([1fa0e98](https://github.com/binier/dgraphium/commit/1fa0e985b4cad388edeeb3176786c2f5e113b798))
+* **core:** allow combining already combined queries ([eb2a5a8](https://github.com/binier/dgraphium/commit/eb2a5a8eca81664d47c92fdf298471d9f6253a9a))
+* **core:** allow overriding edge name with: `edge.name(...)` ([98ce338](https://github.com/binier/dgraphium/commit/98ce338761090a9688cf1c40e6f9e53ef7545b0b))
+* **core:** define refs in existing query if it exists in CombinedQuery ([4611b4a](https://github.com/binier/dgraphium/commit/4611b4a63f7da8c8418f3fdb84c70d7aa9020a7b))
+* **core:** imeplement edge vars ([b717d19](https://github.com/binier/dgraphium/commit/b717d193f6b36ce2892ac8aae8b06be7b7b5b219))
+* **core:** implement `Field` primitive ([a87362e](https://github.com/binier/dgraphium/commit/a87362ebbe13fe702c9d2b9ecf19abd423507520))
+* **core:** implement a way to extract used refs ([74a4515](https://github.com/binier/dgraphium/commit/74a4515c223011db253a732e39dbe0ced163913f))
+* **core:** implement a way to reference field in query ([4a4ea08](https://github.com/binier/dgraphium/commit/4a4ea089ef7961d24f2461d00f21b727600cb90b))
+* **core:** implement a way to return ref in a result as a field ([3ee0300](https://github.com/binier/dgraphium/commit/3ee0300352a000d65a7255d23795294f21f3751b))
+* **core:** implement aggregations ([39b7af2](https://github.com/binier/dgraphium/commit/39b7af28ce55bf6dbbf0a0ba0cf1247564d23a26)), closes [#4](https://github.com/binier/dgraphium/issues/4)
+* **core:** implement building `Query` when it contains `Ref` ([48c2a5e](https://github.com/binier/dgraphium/commit/48c2a5e49dd44072533da8f6ab368d814df7833f))
+* **core:** merge projection instead of overwriting ([728f17b](https://github.com/binier/dgraphium/commit/728f17b20e97b53713dd5f88fff78b78fcb81026))
+* **core/operator/uid:** accept ref ([b8e28df](https://github.com/binier/dgraphium/commit/b8e28dfa15fc9a770295648795a1ef56f3185ecf))
+
+
+### BREAKING CHANGES
+
+* **core:** `query.project(...)` will now deep merge projections by default instead of
+overwriting them. to overwrite instead (previous default behavior): `query.project({}, true)`.
+
+
+
+
+
 # [0.2.0](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.1.1...@dgraphium/core@0.2.0) (2020-07-24)
 
 
