@@ -16,7 +16,11 @@ import {
 import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { Runnable } from '../types';
-import { FieldBuilder, BuildFieldArgs } from '../field';
+import {
+  FieldBuilder,
+  CustomFieldBuilder,
+  BuildFieldArgs,
+} from '../field';
 import { AggregationBuilder } from '../aggregation';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
@@ -24,7 +28,7 @@ export type RawProjection = GenericRawProjection<
   EdgeBuilder | FieldBuilder | AggregationBuilder
 >;
 export type Projection = GenericProjection<
-  EdgeBuilder | FieldBuilder | AggregationBuilder
+  EdgeBuilder | FieldBuilder | CustomFieldBuilder | AggregationBuilder
 >;
 
 export interface NameGenerators {
@@ -83,6 +87,9 @@ export class EdgeBuilder extends FieldBuilder {
           if (existing) return r;
           v = new FieldBuilder(undefined);
         }
+        if (typeof v === 'string')
+          v = new CustomFieldBuilder(v);
+
         if (
           typeof v !== 'object'
           || v instanceof Ref
@@ -100,7 +107,6 @@ export class EdgeBuilder extends FieldBuilder {
 
         if (
           !existing
-          || typeof existing === 'string'
           || existing instanceof Ref
           || existing instanceof AggregationBuilder
         ) {

@@ -5,7 +5,7 @@ export type GenericRawProjection<T> = ObjectOrValue<
   Ref | string | boolean | 0 | 1 | T
 >;
 export type GenericProjection<T> = {
-  [name: string]: Ref | string | false | T;
+  [name: string]: Ref | false | T;
 };
 
 export function capitalize(s: string) {
