@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.3.0...@dgraphium/core@0.3.1) (2020-09-30)
+
+
+### Bug Fixes
+
+* **core:** creating ref on projection item with string value overwrites it ([2729736](https://github.com/binier/dgraphium/commit/272973643eba07e8cab39b8c39c11d4da11e6e7e)), closes [#11](https://github.com/binier/dgraphium/issues/11)
+
+
+
+
+
 # [0.3.0](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.2.0...@dgraphium/core@0.3.0) (2020-09-26)
 
 
