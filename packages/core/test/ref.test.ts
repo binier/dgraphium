@@ -81,4 +81,15 @@ describe('Ref test', () => {
     expect(qStr).toMatch(/likeCount: v1 as likeCount/);
     expect(qStr).toMatch(/likeCountVal: val\(v1\)/);
   });
+
+  it('ref pointing to CustomField(string value)', () => {
+    const myQuery = query().project(q => ({
+      myCount: 'count(myField)',
+      myCountRef: q.ref('myCount'),
+    }))
+    const qStr = myQuery.toString();
+
+    expect(qStr).toMatch(/myCount: v1 as count\(myField\)/);
+    expect(qStr).toMatch(/myCountRef: val\(v1\)/);
+  });
 });
