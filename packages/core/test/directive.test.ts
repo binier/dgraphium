@@ -18,17 +18,17 @@ describe('Directive test', () => {
   });
 
   it('`@recurse` directive no args', () => {
-    expect(edge({}).recurse().toString())
+    expect(query().recurse().toString())
       .toMatch(/@recurse \{/);
   });
 
   it('`@recurse` directive single arg', () => {
-    expect(edge({}).recurse(true).toString())
+    expect(query().recurse(true).toString())
       .toMatch(/@recurse\(loop: true\) \{/);
   });
 
   it('`@recurse` directive all args', () => {
-    expect(edge({}).recurse(true, 5).toString())
+    expect(query().recurse(true, 5).toString())
       .toMatch(/@recurse\(loop: true, depth: 5\) \{/);
   });
 });

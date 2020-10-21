@@ -231,16 +231,6 @@ export class EdgeBuilder extends FieldBuilder {
     return this;
   }
 
-  /**
-   * @see https://dgraph.io/docs/query-language/recurse-query/
-   * @param loopThe loop parameter can be set to false, in which case paths which lead to a loop would be ignored while traversing.
-   * @param depth the maximum depth to recurse.
-   */
-  recurse(loop?: boolean, depth?: number) {
-    this.directives.recurse = new DirectiveBuilder('recurse', loop || depth ?  new RecurseBuilder({ loop, depth }) : undefined);
-    return this;
-  }
-
   keyToField(key: string) {
     if (['id', 'uid'].includes(key))
       return 'uid';
