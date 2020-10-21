@@ -2,9 +2,7 @@
 import { Param, ParamType } from '../param';
 
 export type RecurseBuilderArgs = {
-  // The loop parameter can be set to false, in which case paths which lead to a loop would be ignored while traversing.
   loop?: boolean;
-  // the maximum depth to recurse.
   depth?: number;
 }
 
