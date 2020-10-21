@@ -13,7 +13,7 @@ import {
   GenericRawProjection,
   GenericProjection,
 } from './common';
-import { DirectiveBuilder } from '../directive';
+import { DirectiveBuilder, RecurseBuilder } from '../directive';
 import { Ref } from '../ref';
 import { Runnable } from '../types';
 import {
@@ -198,7 +198,7 @@ export class EdgeBuilder extends FieldBuilder {
   }
 
   protected buildOp<
-    T extends OpBuilders,
+    T extends OpBuilders | RecurseBuilder,
     R extends ReturnType<T['build']>
   >(op: T, nameGen: NameGenerators): R {
     if (op instanceof OperatorBuilder) {
@@ -215,6 +215,8 @@ export class EdgeBuilder extends FieldBuilder {
         ...args,
         operators: args.operators.map(x => this.buildOp(x, nameGen)),
       })) as R;
+    } else if (op instanceof RecurseBuilder) {
+      return op.build() as R;
     }
     throw Error('invalid `op`');
   }
@@ -226,6 +228,11 @@ export class EdgeBuilder extends FieldBuilder {
 
   cascade() {
     this.directives.cascade = new DirectiveBuilder('cascade', undefined);
+    return this;
+  }
+
+  recurse(loop?: boolean, depth?: number) {
+    this.directives.recurse = new DirectiveBuilder('recurse', loop || depth ?  new RecurseBuilder({ loop, depth }) : undefined);
     return this;
   }
 

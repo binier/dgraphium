@@ -16,4 +16,19 @@ describe('Directive test', () => {
     expect(query().ignoreReflex().toString())
       .toMatch(/@ignoreReflex \{/);
   });
+
+  it('`@recurse` directive no args', () => {
+    expect(edge({}).recurse().toString())
+      .toMatch(/@recurse \{/);
+  });
+
+  it('`@recurse` directive single arg', () => {
+    expect(edge({}).recurse(true).toString())
+      .toMatch(/@recurse\(loop: true\) \{/);
+  });
+
+  it('`@recurse` directive all args', () => {
+    expect(edge({}).recurse(true, 5).toString())
+      .toMatch(/@recurse\(loop: true, depth: 5\) \{/);
+  });
 });

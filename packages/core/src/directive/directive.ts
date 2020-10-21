@@ -1,10 +1,12 @@
 import { LogicalOperator, Operator } from '../operator';
 import { Param } from '../param';
+import { Recurse } from './recurse';
 
 export interface DirectiveArgs {
   filter: LogicalOperator | Operator;
   cascade: undefined;
   ignoreReflex: undefined;
+  recurse: Recurse | undefined;
 }
 
 export class Directive<T extends keyof DirectiveArgs = any> {
