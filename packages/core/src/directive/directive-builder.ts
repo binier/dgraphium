@@ -10,6 +10,7 @@ export interface DirectiveBuilderArgs {
   ignoreReflex: undefined;
   recurse: RecurseBuilder | undefined;
 }
+
 export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = any> {
   constructor(
     private name: T,
