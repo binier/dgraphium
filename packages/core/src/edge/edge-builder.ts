@@ -6,14 +6,14 @@ import {
   LogicalOperatorBuilder,
   OpArg,
 } from '../operator';
-import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
+import { Param, ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
 import { Edge } from './edge';
 import {
   capitalize,
   GenericRawProjection,
   GenericProjection,
 } from './common';
-import { DirectiveBuilder, RecurseBuilder } from '../directive';
+import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { Runnable } from '../types';
 import {
@@ -24,6 +24,10 @@ import {
 import { AggregationBuilder } from '../aggregation';
 
 type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
+function isOpBuilder(v: any): v is OpBuilders {
+  return v instanceof OperatorBuilder || v instanceof LogicalOperatorBuilder
+}
+
 export type RawProjection = GenericRawProjection<
   EdgeBuilder | FieldBuilder | AggregationBuilder
 >;
@@ -198,7 +202,7 @@ export class EdgeBuilder extends FieldBuilder {
   }
 
   protected buildOp<
-    T extends OpBuilders | RecurseBuilder,
+    T extends OpBuilders,
     R extends ReturnType<T['build']>
   >(op: T, nameGen: NameGenerators): R {
     if (op instanceof OperatorBuilder) {
@@ -215,8 +219,6 @@ export class EdgeBuilder extends FieldBuilder {
         ...args,
         operators: args.operators.map(x => this.buildOp(x, nameGen)),
       })) as R;
-    } else if (op instanceof RecurseBuilder) {
-      return op.build() as R;
     }
     throw Error('invalid `op`');
   }
@@ -311,8 +313,39 @@ export class EdgeBuilder extends FieldBuilder {
       varName: this._varName,
       directives: Object.entries(this.directives)
         .reduce((r, [k, v]) => {
-          r[k] = v.build(op =>
-            !op ? op : this.buildOp(op, nameGen));
+          r[k] = v.build(args => {
+            if (!args) {
+              return args
+            }
+
+            if (isOpBuilder(args)) {
+              return this.buildOp(args, nameGen);
+            }
+
+            // Assuming it's an object where values are either ParamBuilder instances or scalar primitives.
+            if (typeof args  === 'object') {
+              const r: ParamMap = {}
+              for(const k in args) {
+                if (args[k] instanceof ParamBuilder) {
+                  r[k] = args[k].build()
+                } else {
+                  let t: ParamType
+                  switch (k) {
+                    case 'loop':
+                      t = 'boolean';
+                      break;
+                    case 'depth':
+                      t = 'int';
+                      break;
+                  }
+                  r[k] = new Param(k, t, args[k])
+                }
+              }
+              return r
+            }
+
+            throw Error('directive builder args type not supported.');
+          });
           return r;
         }, {}),
     };

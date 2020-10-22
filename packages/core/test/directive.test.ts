@@ -23,12 +23,12 @@ describe('Directive test', () => {
   });
 
   it('`@recurse` directive single arg', () => {
-    expect(query().recurse(true).toString())
-      .toMatch(/@recurse\(loop: true\) \{/);
+    expect(query().recurse({ loop: false }).toString())
+      .toMatch(/@recurse\(loop: false\) \{/);
   });
 
   it('`@recurse` directive all args', () => {
-    expect(query().recurse(true, 5).toString())
-      .toMatch(/@recurse\(loop: true, depth: 5\) \{/);
+    expect(query().recurse({ loop: false, depth: 5 }).toString())
+      .toMatch(/@recurse\(loop: false, depth: 5\) \{/);
   });
 });

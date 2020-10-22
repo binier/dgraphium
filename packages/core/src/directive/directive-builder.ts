@@ -2,13 +2,13 @@ import { Transformer } from '../utils';
 import { LogicalOperatorBuilder, OperatorBuilder } from '../operator';
 import { DirectiveArgs, Directive } from './directive';
 import { extractRefs } from '../ref';
-import { RecurseBuilder } from './recurse'
+import { RecurseBuilderArgs } from './recurse'
 
 export interface DirectiveBuilderArgs {
   filter: LogicalOperatorBuilder | OperatorBuilder;
   cascade: undefined;
   ignoreReflex: undefined;
-  recurse: RecurseBuilder | undefined;
+  recurse: RecurseBuilderArgs;
 }
 
 export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = any> {
