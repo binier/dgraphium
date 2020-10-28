@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.3.1...@dgraphium/core@0.3.2) (2020-10-28)
+
+
+### Bug Fixes
+
+* **core:** `operators.type` subject gets prefixed with graphql type ([97b6cfd](https://github.com/binier/dgraphium/commit/97b6cfd042f280fb8a7a261856c6510a9d44f7a9)), closes [#15](https://github.com/binier/dgraphium/issues/15)
+
+
+
+
+
 ## [0.3.1](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.3.0...@dgraphium/core@0.3.1) (2020-09-30)
 
 
