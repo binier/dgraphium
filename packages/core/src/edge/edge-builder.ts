@@ -5,8 +5,6 @@ import {
   OperatorBuilder,
   LogicalOperatorBuilder,
   OpArg,
-  LogicalOperator,
-  Operator,
   OpBuilderTypes,
   BuiltOpTypes,
 } from '../operator';
