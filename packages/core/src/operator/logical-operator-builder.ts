@@ -1,12 +1,12 @@
 import { LogicalOperator, LogicalOperatorArgs } from './logical-operator';
 import { Transformer } from '../utils';
-import { OperatorBuilder } from './operator-builder';
 import { extractRefs } from '../ref';
+import type { OpBuilderTypes } from './';
 
 export interface LogicalOperatorBuilderArgs
   extends Omit<LogicalOperatorArgs, 'operators'>
 {
-  operators: (OperatorBuilder | LogicalOperatorBuilder)[];
+  operators: OpBuilderTypes[];
 }
 
 type BuildTransformer = Transformer<

@@ -22,6 +22,10 @@ export class OperatorBuilder {
   }
 
   build(transform: Transformer<OperatorBuilderArgs, OperatorArgs>) {
-    return new Operator(transform(this.args));
+    const op = new Operator(transform(this.args));
+    // `type` operator shouldn't get prefixed with graphql type
+    if (this.args.name === 'type')
+      op.subject = this.args.subject;
+    return op;
   }
 }
