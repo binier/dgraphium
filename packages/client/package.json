@@ -1,7 +1,7 @@
 {
   "name": "@dgraphium/client",
   "license": "MIT",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -43,7 +43,7 @@
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
-    "@dgraphium/core": "^0.3.2",
+    "@dgraphium/core": "^0.3.3",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.0",
     "coveralls": "^3.0.2",

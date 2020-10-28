@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.3.2...@dgraphium/core@0.3.3) (2020-10-28)
+
+
+### Bug Fixes
+
+* **core:** remove unused imports ([b136788](https://github.com/binier/dgraphium/commit/b1367889a19397f2b88228ea511763d26da7aec1))
+
+
+
+
+
 ## [0.3.2](https://github.com/binier/dgraphium/compare/@dgraphium/core@0.3.1...@dgraphium/core@0.3.2) (2020-10-28)
 
 
