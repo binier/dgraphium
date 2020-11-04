@@ -12,6 +12,7 @@ import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { CombinedQuery } from './combined-query';
 import { CombinedQueryBuilder } from './combined-query-builder';
+import { RecurseBuilderArgs } from '../directive/recurse';
 
 type QueryProjection = EdgeBuilder | RawProjection;
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
@@ -52,13 +53,7 @@ export class QueryBuilder extends EdgeBuilder {
     return this;
   }
 
-  /**
-   * @see https://dgraph.io/docs/query-language/recurse-query/
-   * @param args
-   * @param args.loop The loop parameter can be set to false, in which case paths which lead to a loop would be ignored while traversing.
-   * @param args.depth the maximum depth to recurse.
-   */
-  recurse(args?: {loop?: boolean; depth?: number}) {
+  recurse(args?: RecurseBuilderArgs) {
     this.directives.recurse = new DirectiveBuilder('recurse', args);
     return this;
   }
