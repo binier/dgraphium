@@ -45,11 +45,11 @@ export class Directive<T extends keyof DirectiveArgs = any> {
     }
 
     if (isParamMap(this.args)) {
-      return this.params().reduce((p, c, i) => {
+      return Object.keys(this.args).reduce((p, c, i) => {
           if (i > 0) {
             p += ', '
           }
-          return p += `${c.getName()}: ${c.getValue()}`
+          return p += `${c}: ${this.args[c].toString()}`
         }, out + '(') + ')'
     }
 

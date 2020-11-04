@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { query, edge } from '../src';
 import { has } from '../src/operators';
 import { ParamBuilder } from '../src/param';
@@ -24,13 +25,20 @@ describe('Directive test', () => {
   });
 
   it('`@recurse` directive single primitive arg', () => {
-    expect(query().recurse({ loop: false }).toString())
-      .toMatch(/@recurse\(loop: false\) \{/);
+    const q = query().recurse({ loop: false });
+    expect(q.toString())
+      .toMatch(/@recurse\(loop: \$loop\) \{/);
+    const params = q.build().params();
+    expect(params[0].getValue()).toEqual('false');
   });
 
   it('`@recurse` directive all primitive args', () => {
-    expect(query().recurse({ loop: false, depth: 5 }).toString())
-      .toMatch(/@recurse\(loop: false, depth: 5\) \{/);
+    const q = query().recurse({ loop: false, depth: 5 });
+    expect(q.toString())
+      .toMatch(/@recurse\(loop: \$loop\, depth: \$depth\) \{/);
+    const params = q.build().params();
+    expect(params[0].getValue()).toEqual('false');
+    expect(params[1].getValue()).toEqual('5');
   });
 
   it('`@recurse` directive single ParamBuilder arg', () => {
@@ -41,4 +49,12 @@ describe('Directive test', () => {
     expect(myQuery.toString()).toMatch(/@recurse\(loop: \$loop\) \{/);
   });
 
+  it('`@recurse` directive all ParamBuilder args', () => {
+    const q = query().recurse({ loop: new ParamBuilder('boolean', false, 'loop'), depth: new ParamBuilder('int', 5, 'depth') });
+    expect(q.toString())
+      .toMatch(/@recurse\(loop: \$loop\, depth: \$depth\) \{/);
+    const params = q.build().params();
+    expect(params[0].getValue()).toEqual('false');
+    expect(params[1].getValue()).toEqual('5');
+  });
 });

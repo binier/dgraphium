@@ -6,7 +6,7 @@ import {
   LogicalOperatorBuilder,
   OpArg,
 } from '../operator';
-import { Param, ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
+import { ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
 import { Edge } from './edge';
 import {
   capitalize,
@@ -326,8 +326,9 @@ export class EdgeBuilder extends FieldBuilder {
             if (typeof args  === 'object') {
               const r: ParamMap = {}
               for(const k in args) {
+                let p: ParamBuilder
                 if (args[k] instanceof ParamBuilder) {
-                  r[k] = args[k].build()
+                  p = args[k];
                 } else {
                   let t: ParamType
                   switch (k) {
@@ -337,11 +338,17 @@ export class EdgeBuilder extends FieldBuilder {
                     case 'depth':
                       t = 'int';
                       break;
+                    default:
+                      throw new Error(`Directive arg named parameter "${k}" not supported.`);
                   }
-                  r[k] = new Param(k, t, args[k])
+
+                  p = new ParamBuilder(t, args[k], k);
                 }
+
+                r[k] = p.build();
               }
-              return r
+
+              return r;
             }
 
             throw Error('directive builder args type not supported.');

@@ -15,7 +15,7 @@ export type ParamType = keyof ParamTypeValue;
 export type ParamMap = { [name: string]: Param };
 export function isParamMap(v: any): v is ParamMap {
   if (typeof v === 'object') {
-    return Object.values(v).every(i => i instanceof Param)
+    return Object.values(v).every(i => i instanceof Param);
   }
   return false;
 }
