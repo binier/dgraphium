@@ -1,7 +1,6 @@
 // @ts-nocheck
-import { query, edge } from '../src';
+import { query, edge, params } from '../src';
 import { has } from '../src/operators';
-import { ParamBuilder } from '../src/param';
 
 // does not test formatting
 describe('Directive test', () => {
@@ -27,34 +26,29 @@ describe('Directive test', () => {
   it('`@recurse` directive single primitive arg', () => {
     const q = query().recurse({ loop: false });
     expect(q.toString())
-      .toMatch(/@recurse\(loop: \$loop\) \{/);
-    const params = q.build().params();
-    expect(params[0].getValue()).toEqual('false');
+      .toMatch(/@recurse\(loop: false\) \{/);
   });
 
   it('`@recurse` directive all primitive args', () => {
     const q = query().recurse({ loop: false, depth: 5 });
     expect(q.toString())
-      .toMatch(/@recurse\(loop: \$loop\, depth: \$depth\) \{/);
-    const params = q.build().params();
-    expect(params[0].getValue()).toEqual('false');
-    expect(params[1].getValue()).toEqual('5');
+      .toMatch(/@recurse\(loop: false, depth: 5\) \{/);
   });
 
   it('`@recurse` directive single ParamBuilder arg', () => {
-    const myQuery = query().recurse({ loop: new ParamBuilder('boolean', false, 'loop') }).build();
+    const myQuery = query().recurse({ loop: params.bool(false) }).build();
     const myParams = myQuery.params();
 
     expect(myParams[0].getValue()).toEqual('false');
-    expect(myQuery.toString()).toMatch(/@recurse\(loop: \$loop\) \{/);
+    expect(myQuery.toString()).toMatch(/@recurse\(loop: \$p1\) \{/);
   });
 
   it('`@recurse` directive all ParamBuilder args', () => {
-    const q = query().recurse({ loop: new ParamBuilder('boolean', false, 'loop'), depth: new ParamBuilder('int', 5, 'depth') });
+    const q = query().recurse({ loop: params.bool(false), depth: params.int(5) });
     expect(q.toString())
-      .toMatch(/@recurse\(loop: \$loop\, depth: \$depth\) \{/);
-    const params = q.build().params();
-    expect(params[0].getValue()).toEqual('false');
-    expect(params[1].getValue()).toEqual('5');
+      .toMatch(/@recurse\(loop: \$p1, depth: \$p2\) \{/);
+    const myParams = q.build().params();
+    expect(myParams[0].getValue()).toEqual('false');
+    expect(myParams[1].getValue()).toEqual('5');
   });
 });
