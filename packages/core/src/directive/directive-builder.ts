@@ -5,13 +5,13 @@ import { extractRefs } from '../ref';
 import { RecurseBuilderArgs } from './recurse'
 
 export interface DirectiveBuilderArgs {
-  filter: OpBuilderTypes;
+  filter: [OpBuilderTypes];
   cascade: undefined;
   ignoreReflex: undefined;
   recurse: RecurseBuilderArgs;
 }
 
-export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = any> {
+export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = keyof DirectiveBuilderArgs> {
   constructor(
     private name: T,
     private args: DirectiveBuilderArgs[T]
