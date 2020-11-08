@@ -7,6 +7,7 @@ import {
   OpArg,
   OpBuilderTypes,
   BuiltOpTypes,
+  isOpBuilder,
 } from '../operator';
 import { ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
 import { Edge } from './edge';
