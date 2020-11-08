@@ -12,6 +12,7 @@ import { DirectiveBuilder } from '../directive';
 import { Ref } from '../ref';
 import { CombinedQuery } from './combined-query';
 import { CombinedQueryBuilder } from './combined-query-builder';
+import { RecurseBuilderArgs } from '../directive/recurse';
 
 type QueryProjection = EdgeBuilder | RawProjection;
 export type BuildQueryNameGen = BuildNameGen<{ _queryNameGenBrand: symbol }>;
@@ -49,6 +50,11 @@ export class QueryBuilder extends EdgeBuilder {
 
   ignoreReflex() {
     this.directives.ignoreReflex = new DirectiveBuilder('ignoreReflex', undefined);
+    return this;
+  }
+
+  recurse(args?: RecurseBuilderArgs) {
+    this.directives.recurse = new DirectiveBuilder('recurse', args);
     return this;
   }
 

@@ -8,7 +8,7 @@ import {
   OpBuilderTypes,
   BuiltOpTypes,
 } from '../operator';
-import { ParamBuilder, paramNameGen, ParamNameGen } from '../param';
+import { ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
 import { Edge } from './edge';
 import {
   capitalize,
@@ -309,8 +309,46 @@ export class EdgeBuilder extends FieldBuilder {
       varName: this._varName,
       directives: Object.entries(this.directives)
         .reduce((r, [k, v]) => {
-          r[k] = v.build(op =>
-            !op ? op : this.buildOp(op, nameGen));
+          r[k] = v.build(args => {
+            if (!args) {
+              return args
+            }
+
+            if (isOpBuilder(args)) {
+              return this.buildOp(args, nameGen);
+            }
+
+            // Assuming it's an object where values are either ParamBuilder instances or scalar primitives.
+            if (typeof args  === 'object') {
+              const r: ParamMap = {}
+              for(const k in args) {
+                let p: ParamBuilder
+                if (args[k] instanceof ParamBuilder) {
+                  p = args[k];
+                } else {
+                  let t: ParamType
+                  switch (k) {
+                    case 'loop':
+                      t = 'boolean';
+                      break;
+                    case 'depth':
+                      t = 'int';
+                      break;
+                    default:
+                      throw new Error(`Directive arg named parameter "${k}" not supported.`);
+                  }
+
+                  p = new ParamBuilder(t, args[k], k);
+                }
+
+                r[k] = p.build();
+              }
+
+              return r;
+            }
+
+            throw Error('directive builder args type not supported.');
+          });
           return r;
         }, {}),
     };

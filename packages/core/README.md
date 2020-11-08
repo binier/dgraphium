@@ -158,7 +158,7 @@ All pagination methods are available for queries as well as nested edges.
 - `.offset(offset: number)`: node offset or amount of nodes to skip.
 - `.after(id: Uid)`: fetch nodes after the `id`.
 
-you can also use 
+you can also use
 ```typescript
 .withArgs(args: {
   first: number,
@@ -174,6 +174,7 @@ Query and Edge directives:
 
 Query only directives:
 - **ignoreReflex**
+- **recurse**
 
 Those directives are available on edge or query as a function, e.g.
 `edge.cascase()`.
