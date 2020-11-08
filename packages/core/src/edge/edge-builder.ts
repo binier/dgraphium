@@ -5,6 +5,8 @@ import {
   OperatorBuilder,
   LogicalOperatorBuilder,
   OpArg,
+  OpBuilderTypes,
+  BuiltOpTypes,
 } from '../operator';
 import { ParamBuilder, ParamMap, paramNameGen, ParamNameGen, ParamType } from '../param';
 import { Edge } from './edge';
@@ -22,11 +24,6 @@ import {
   BuildFieldArgs,
 } from '../field';
 import { AggregationBuilder } from '../aggregation';
-
-type OpBuilders = OperatorBuilder | LogicalOperatorBuilder;
-function isOpBuilder(v: any): v is OpBuilders {
-  return v instanceof OperatorBuilder || v instanceof LogicalOperatorBuilder
-}
 
 export type RawProjection = GenericRawProjection<
   EdgeBuilder | FieldBuilder | AggregationBuilder
@@ -202,9 +199,8 @@ export class EdgeBuilder extends FieldBuilder {
   }
 
   protected buildOp<
-    T extends OpBuilders,
-    R extends ReturnType<T['build']>
-  >(op: T, nameGen: NameGenerators): R {
+    T extends OpBuilderTypes,
+  >(op: T, nameGen: NameGenerators): BuiltOpTypes {
     if (op instanceof OperatorBuilder) {
       return op.build(args => ({
         ...args,
@@ -213,17 +209,17 @@ export class EdgeBuilder extends FieldBuilder {
           ? this.buildParam(args.arg, nameGen.param)
           : args.arg as OpArg,
         subject: args.subject ? this.keyToField(args.subject) : undefined,
-      })) as R;
+      }));
     } else if (op instanceof LogicalOperatorBuilder) {
       return op.build(args => ({
         ...args,
         operators: args.operators.map(x => this.buildOp(x, nameGen)),
-      })) as R;
+      }));
     }
     throw Error('invalid `op`');
   }
 
-  filter(opBuilder: OpBuilders) {
+  filter(opBuilder: OpBuilderTypes) {
     this.directives.filter = new DirectiveBuilder('filter', opBuilder);
     return this;
   }

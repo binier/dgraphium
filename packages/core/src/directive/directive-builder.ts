@@ -1,11 +1,11 @@
 import { Transformer } from '../utils';
-import { LogicalOperatorBuilder, OperatorBuilder } from '../operator';
+import { OpBuilderTypes } from '../operator';
 import { DirectiveArgs, Directive } from './directive';
 import { extractRefs } from '../ref';
 import { RecurseBuilderArgs } from './recurse'
 
 export interface DirectiveBuilderArgs {
-  filter: LogicalOperatorBuilder | OperatorBuilder;
+  filter: OpBuilderTypes;
   cascade: undefined;
   ignoreReflex: undefined;
   recurse: RecurseBuilderArgs;

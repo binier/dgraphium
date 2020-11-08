@@ -20,6 +20,12 @@ describe('Operator test - Raw value', () => {
     ).toMatch(/type\(User\)/)
   });
 
+  it('operator: `type` shouldn\'t prefix by graphql type', () => {
+    expect(
+      edge('gqlType', {}).filter(type('User')).toString()
+    ).toMatch(/type\(User\)/);
+  });
+
   it('operator: `uid`', () => {
     expect(
       edge({}).filter(uid('0x2')).toString()
