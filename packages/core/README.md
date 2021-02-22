@@ -171,6 +171,7 @@ you can also use
 
 Query and Edge directives:
 - **cascade**
+- **groupBy**
 
 Query only directives:
 - **ignoreReflex**

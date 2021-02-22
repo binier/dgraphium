@@ -51,4 +51,9 @@ describe('Directive test', () => {
     expect(myParams[0].getValue()).toEqual('false');
     expect(myParams[1].getValue()).toEqual('5');
   });
+
+  it('`@groupBy` directive', () => {
+    expect(edge({}).groupBy('predicate').toString())
+        .toMatch(/@groupBy\(predicate\) \{/);
+  });
 });
