@@ -15,7 +15,7 @@ describe('Directive test', () => {
 
   it('`@ignoreReflex` directive', () => {
     expect(query().ignoreReflex().toString())
-      .toMatch(/@ignoreReflex \{/);
+      .toMatch(/@ignorereflex \{/);
   });
 
   it('`@recurse` directive no args', () => {
@@ -50,5 +50,10 @@ describe('Directive test', () => {
     const myParams = q.build().params();
     expect(myParams[0].getValue()).toEqual('false');
     expect(myParams[1].getValue()).toEqual('5');
+  });
+
+  it('`@groupBy` directive', () => {
+    expect(edge({}).groupBy('predicate').toString())
+        .toMatch(/@groupby\(predicate\) \{/);
   });
 });

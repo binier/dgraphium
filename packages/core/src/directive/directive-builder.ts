@@ -3,12 +3,14 @@ import { OpBuilderTypes } from '../operator';
 import { DirectiveArgs, Directive } from './directive';
 import { extractRefs } from '../ref';
 import { RecurseBuilderArgs } from './recurse'
+import { GroupByBuilderArgs } from './group-by'
 
 export interface DirectiveBuilderArgs {
   filter: [OpBuilderTypes];
   cascade: undefined;
   ignoreReflex: undefined;
   recurse: RecurseBuilderArgs;
+  groupBy: GroupByBuilderArgs;
 }
 
 export class DirectiveBuilder<T extends keyof DirectiveBuilderArgs = keyof DirectiveBuilderArgs> {

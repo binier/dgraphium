@@ -17,6 +17,7 @@ import {
   GenericProjection,
 } from './common';
 import { DirectiveBuilder } from '../directive';
+import { GroupByBuilderArgs } from '../directive/group-by';
 import { Ref } from '../ref';
 import { Runnable } from '../types';
 import {
@@ -244,6 +245,11 @@ export class EdgeBuilder extends FieldBuilder {
 
   cascade() {
     this.directives.cascade = new DirectiveBuilder('cascade', undefined);
+    return this;
+  }
+
+  groupBy(predicate: GroupByBuilderArgs) {
+    this.directives.groupBy = new DirectiveBuilder('groupBy', predicate);
     return this;
   }
 
