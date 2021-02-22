@@ -15,7 +15,7 @@ describe('Directive test', () => {
 
   it('`@ignoreReflex` directive', () => {
     expect(query().ignoreReflex().toString())
-      .toMatch(/@ignoreReflex \{/);
+      .toMatch(/@ignorereflex \{/);
   });
 
   it('`@recurse` directive no args', () => {
@@ -54,6 +54,6 @@ describe('Directive test', () => {
 
   it('`@groupBy` directive', () => {
     expect(edge({}).groupBy('predicate').toString())
-        .toMatch(/@groupBy\(predicate\) \{/);
+        .toMatch(/@groupby\(predicate\) \{/);
   });
 });

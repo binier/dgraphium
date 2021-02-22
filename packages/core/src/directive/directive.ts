@@ -42,7 +42,7 @@ export class Directive<T extends keyof DirectiveArgs = any> {
       : typeof this.args!=='object'? [this.args]
       : Object.entries(this.args).map(([key, value]) => `${key}: ${value}`);
 
-    return `@${this.name}${
+    return `@${this.name.toLowerCase()}${
       !argsList.length ? '' : `(${argsList.join(', ')})`
     }`;
   }
